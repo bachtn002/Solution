@@ -1,11 +1,16 @@
 ﻿
 using Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Repository.Interface;
 using Repository.Model;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,21 +19,28 @@ namespace Repository.Repository
     public class UserRepo : IUserRepo
     {
         private readonly QL_CTVContext _dataDbContext;
-        public UserRepo(QL_CTVContext dataDbContext)
+        private readonly SignInManager<TUser> _signInManager;
+        private readonly UserManager<TUser> _userManager;
+        private readonly IConfiguration _configuration;
+
+        public UserRepo(QL_CTVContext dataDbContext, SignInManager<TUser> signInManager, UserManager<TUser> userManager, IConfiguration configuration)
         {
             _dataDbContext = dataDbContext;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         public async Task<bool> RegisterUser(UserRegisterModel request)
         {
-            var user = await _dataDbContext.TUsers.FindAsync(request.Mobile);
-            if (user != null)
+            /*var user = await _dataDbContext.TUsers.FindAsync(request.Mobile);*/
+            if (await _dataDbContext.TUsers.AnyAsync(x => x.Mobile == request.Mobile))
             {
                 return false;
             }
+
             await _dataDbContext.TUsers.AddAsync(new TUser()
             {
-
                 Mobile = request.Mobile,
                 PasswordHash = request.PasswordHash,
                 FullName = request.FullName,
@@ -37,7 +49,7 @@ namespace Repository.Repository
                 DateOfBirth = request.DateOfBirth,
                 UserStatusId = 1,
                 RoleId = 1,
-                CreatedUtcDate = DateTime.Now,
+                CreatedUtcDate = DateTime.Now
 
             });
             var result = await _dataDbContext.SaveChangesAsync();
@@ -67,6 +79,28 @@ namespace Repository.Repository
             return data;
         }
 
-
+        public async Task<string> LoginUser(UserLoginModel request)
+        {
+            var user = await _userManager.FindByNameAsync(request.Mobile);
+            if (user == null)
+                return null;
+            var result = await _signInManager.PasswordSignInAsync(user, request.Password, true, true);
+            if (!result.Succeeded) { return null; }
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name,request.Mobile),
+                new Claim(ClaimTypes.Hash, request.Password),
+            };
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            var token = new JwtSecurityToken
+                (
+                    issuer: _configuration["JWT:ValidIssuer"],
+                    audience: _configuration["JWT:ValidAudience"],
+                    expires: DateTime.UtcNow.AddHours(3),
+                    claims:claims,
+                    signingCredentials:new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }

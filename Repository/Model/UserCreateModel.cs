@@ -12,8 +12,7 @@ namespace Repository.Model
         public string Mobile { get; set; }
         [Display(Name = "Name")]
         public string FullName { get; set; }
-        [Display(Name = "Password")]
-        public string PasswordHash { get; set; }
+        
         [Display(Name = "Date of birth")]
         public DateTime DateOfBirth { get; set; }
         [Display(Name = "Gender")]

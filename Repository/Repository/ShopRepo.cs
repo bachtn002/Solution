@@ -17,9 +17,22 @@ namespace Repository.Repository
         {
             _dataDbContext = dataDbContext;
         }
-        public Task<bool> CreateShop(ShopCreateModel request)
+        public async Task<bool> CreateShop(ShopCreateModel request)
         {
-            throw new NotImplementedException();
+            await _dataDbContext.TShops.AddAsync(new TShop()
+            {
+                Name=request.Name,
+                Address=request.Address,
+                Description=request.Description,
+                Avatar=request.Avatar,
+                CreatedUtcDate=DateTime.UtcNow
+            });
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result < 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<List<ShopUserViewModel>> GetShopUser()
@@ -38,7 +51,7 @@ namespace Repository.Repository
                 ShopStatusName = x.ss.ShopStatusName
             }).ToListAsync();
             return data;
-            
+
         }
     }
 }

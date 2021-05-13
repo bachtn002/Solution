@@ -9,11 +9,14 @@ namespace Repository.Model
 {
     public class UserRegisterModel
     {
-        
+        [Required(ErrorMessage ="Mobile is required")]
+        [RegularExpression(@"(^\d+$)",ErrorMessage ="Mobile contains only number 0-9")]
         public string Mobile { get; set; }
 
         [Display(Name="Password")]
         [DataType(DataType.Password)]
+        [Required(ErrorMessage ="Password is required")]
+        [MinLength(6,ErrorMessage ="Password at least 6 character")]
         public string PasswordHash { get; set; }
         
         [Display(Name = "Name")]

@@ -1,6 +1,4 @@
-﻿
-using Repository.Model;
-
+﻿using Repository.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +9,7 @@ namespace Repository.Interface
 {
     public interface IUserRepo
     {
+        public Task<string> LoginUser(UserLoginModel request);
         public Task<List<UserViewModel>> GetAllUser();
         public Task<bool> RegisterUser(UserRegisterModel request);
     }

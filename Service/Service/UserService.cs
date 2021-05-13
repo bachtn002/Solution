@@ -1,5 +1,4 @@
-﻿
-using Repository.Interface;
+﻿using Repository.Interface;
 using Repository.Model;
 using Service.Interface;
 using System;
@@ -26,6 +25,11 @@ namespace Service.Service
         public async Task<List<UserViewModel>> GetAllUser()
         {
             return await _userRepo.GetAllUser();
+        }
+
+        public Task<string> LoginUser(UserLoginModel request)
+        {
+            return _userRepo.LoginUser(request);
         }
 
         public async Task<bool> RegisterUser(UserRegisterModel request)

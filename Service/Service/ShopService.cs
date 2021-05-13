@@ -18,7 +18,7 @@ namespace Service.Service
         }
         public Task<bool> CreateShop(ShopCreateModel request)
         {
-            throw new NotImplementedException();
+            return _shopRepo.CreateShop(request);
         }
 
         public async Task<List<ShopUserViewModel>> GetShopUser()
