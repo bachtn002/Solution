@@ -1,11 +1,16 @@
 using Data.EFContext;
 using Data.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Repository.Interface;
 using Repository.Repository;
 using Service.Interface;
@@ -13,6 +18,7 @@ using Service.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WebApplication1
@@ -29,12 +35,24 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            
             services.AddRazorPages().AddRazorRuntimeCompilation();
-
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login/login";
+                    
+                });
+            services.AddHttpClient();
+            services.AddControllersWithViews();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             services.AddTransient<QL_CTVContext, QL_CTVContext>();
             services.AddTransient<IShopRepo, ShopRepo>();
             services.AddTransient<IUserRepo, UserRepo>();
+            
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IShopService, ShopService>();
         }
@@ -55,9 +73,12 @@ namespace WebApplication1
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

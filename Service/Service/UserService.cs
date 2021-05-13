@@ -27,9 +27,9 @@ namespace Service.Service
             return await _userRepo.GetAllUser();
         }
 
-        public Task<string> LoginUser(UserLoginModel request)
+        public async Task<string> LoginUser(UserLoginModel request)
         {
-            return _userRepo.LoginUser(request);
+            return await _userRepo.LoginUser(request);
         }
 
         public async Task<bool> RegisterUser(UserRegisterModel request)

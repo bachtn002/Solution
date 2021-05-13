@@ -19,15 +19,15 @@ namespace Repository.Repository
     public class UserRepo : IUserRepo
     {
         private readonly QL_CTVContext _dataDbContext;
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
+        //private readonly SignInManager<TUser> _signInManager;
+        // private readonly UserManager<TUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public UserRepo(QL_CTVContext dataDbContext, SignInManager<TUser> signInManager, UserManager<TUser> userManager, IConfiguration configuration)
+        public UserRepo(QL_CTVContext dataDbContext, IConfiguration configuration)
         {
             _dataDbContext = dataDbContext;
-            _signInManager = signInManager;
-            _userManager = userManager;
+            // _signInManager = signInManager;
+            // _userManager = userManager;
             _configuration = configuration;
         }
 
@@ -81,26 +81,36 @@ namespace Repository.Repository
 
         public async Task<string> LoginUser(UserLoginModel request)
         {
-            var user = await _userManager.FindByNameAsync(request.Mobile);
+            /*var user = await _userManager.FindByNameAsync(request.Mobile);
             if (user == null)
                 return null;
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, true, true);
-            if (!result.Succeeded) { return null; }
-            var claims = new List<Claim>
+            if (!result.Succeeded) { return null; }*/
+            var data = await _dataDbContext.TUsers.Where(x => x.Mobile.Equals(request.Mobile) && x.PasswordHash.Equals(request.Password)).ToListAsync();
+            if (data.Count() > 0)
+            {
+                var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,request.Mobile),
                 new Claim(ClaimTypes.Hash, request.Password),
             };
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
-            var token = new JwtSecurityToken
-                (
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.UtcNow.AddHours(3),
-                    claims:claims,
-                    signingCredentials:new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+                var token = new JwtSecurityToken
+                    (
+                        issuer: _configuration["JWT:ValidIssuer"],
+                        audience: _configuration["JWT:ValidAudience"],
+                        expires: DateTime.UtcNow.AddHours(3),
+                        claims: claims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            else
+            {
+                return null;
+            }
+
+
         }
     }
 }

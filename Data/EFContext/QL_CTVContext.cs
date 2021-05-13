@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Data.EFContext;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
