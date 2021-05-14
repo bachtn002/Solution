@@ -39,7 +39,7 @@ namespace WebApplication.Controllers
             var result = await _userService.RegisterUser(request);
             if (result == true)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Login","Login");
             }
             return View();
         }
