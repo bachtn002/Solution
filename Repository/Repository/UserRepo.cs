@@ -1,5 +1,6 @@
 ﻿using Data.Models;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,16 +19,14 @@ namespace Repository.Repository
     public class UserRepo : IUserRepo
     {
         private readonly QL_CTVContext _dataDbContext;
-        //private readonly SignInManager<TUser> _signInManager;
-        // private readonly UserManager<TUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserRepo(QL_CTVContext dataDbContext, IConfiguration configuration)
+        public UserRepo(QL_CTVContext dataDbContext, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _dataDbContext = dataDbContext;
-            // _signInManager = signInManager;
-            // _userManager = userManager;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<bool> RegisterUser(UserRegisterModel request)
@@ -80,36 +79,49 @@ namespace Repository.Repository
 
         public async Task<string> LoginUser(UserLoginModel request)
         {
-            /*var user = await _userManager.FindByNameAsync(request.Mobile);
-            if (user == null)
-                return null;
-            var result = await _signInManager.PasswordSignInAsync(user, request.Password, true, true);
-            if (!result.Succeeded) { return null; }*/
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.Mobile == request.Mobile);
             var data = await _dataDbContext.TUsers.Where(x => x.Mobile.Equals(request.Mobile) && x.PasswordHash.Equals(request.Password)).ToListAsync();
             if (data.Count() > 0)
             {
                 var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name,request.Mobile),
-                new Claim(ClaimTypes.Hash, request.Password),
-            };
+                {
+                /*new Claim(ClaimTypes.Name,user.Mobile),
+                new Claim(ClaimTypes.Hash, user.PasswordHash),
+                new Claim(ClaimTypes.GivenName, user.FullName),*/
+                new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString())
+                };
+                /*var identity = new ClaimsIdentity(DefaultAuthenticationTypes.ApplicationCookie);
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()));*/
+
+                /*var claimsPrincipal = new ClaimsPrincipal(identity);
+                Thread.CurrentPrincipal = claimsPrincipal;*/
+
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
                 var token = new JwtSecurityToken
                     (
                         issuer: _configuration["JWT:ValidIssuer"],
                         audience: _configuration["JWT:ValidAudience"],
-                        expires: DateTime.UtcNow.AddHours(3),
+                        expires: DateTime.UtcNow.AddDays(1),
                         claims: claims,
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                var tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
+                return tokenstring;
             }
             else
             {
                 return null;
             }
-
-
         }
-    }
+
+        public long GetUserId()
+        {
+            /*var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = Convert.ToInt64(identity.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
+                return userId;*/
+            var userId = Convert.ToInt64(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return userId;
+        }
+
+}
 }

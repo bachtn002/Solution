@@ -1,4 +1,5 @@
-﻿using Repository.Model;
+﻿using Microsoft.AspNetCore.Http;
+using Repository.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Repository.Interface
         public Task<string> LoginUser(UserLoginModel request);
         public Task<List<UserViewModel>> GetAllUser();
         public Task<bool> RegisterUser(UserRegisterModel request);
+        public long GetUserId();
+        
     }
 }

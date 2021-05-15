@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -37,24 +38,25 @@ namespace WebApplication1
         {
             
             services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/login/login";
-                    
-                });
+
+            
             services.AddHttpClient();
             services.AddControllersWithViews();
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-            });
+            
             services.AddTransient<QL_CTVContext, QL_CTVContext>();
             services.AddTransient<IShopRepo, ShopRepo>();
             services.AddTransient<IUserRepo, UserRepo>();
             
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IShopService, ShopService>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login/login";
+                });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,7 +80,6 @@ namespace WebApplication1
             app.UseRouting();
 
             app.UseAuthorization();
-            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

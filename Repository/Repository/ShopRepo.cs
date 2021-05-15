@@ -1,10 +1,13 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using Repository.Model;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,20 +16,32 @@ namespace Repository.Repository
     public class ShopRepo : IShopRepo
     {
         private readonly QL_CTVContext _dataDbContext;
-        public ShopRepo(QL_CTVContext dataDbContext)
+        private readonly IUserRepo _userRepo;
+        public ShopRepo(QL_CTVContext dataDbContext,IUserRepo userRepo)
         {
             _dataDbContext = dataDbContext;
+            _userRepo = userRepo;
+        }
+
+        public async Task<long> GetUserId(UserLoginModel request)
+        {
+            var token = await _userRepo.LoginUser(request);
+            var tokeRead = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var userId = Convert.ToInt64(tokeRead.Claims.First(x => x.Type == "UserId").Value);
+            return userId;
         }
         public async Task<bool> CreateShop(ShopCreateModel request)
         {
             await _dataDbContext.TShops.AddAsync(new TShop()
             {
-                Name=request.Name,
-                Address=request.Address,
-                Description=request.Description,
-                Avatar=request.Avatar,
-                CreatedUtcDate=DateTime.UtcNow
-            });
+                UserId = _userRepo.GetUserId(),
+                Name = request.Name,
+                Address = request.Address,
+                Description = request.Description,
+                Avatar = request.Avatar,
+                ShopStatusId=1,
+                CreatedUtcDate = DateTime.UtcNow
+            }); 
             var result = await _dataDbContext.SaveChangesAsync();
             if (result < 0)
             {
@@ -34,7 +49,7 @@ namespace Repository.Repository
             }
             return true;
         }
-
+        
         public async Task<List<ShopUserViewModel>> GetShopUser()
         {
             var query = from u in _dataDbContext.TUsers
@@ -52,6 +67,11 @@ namespace Repository.Repository
             }).ToListAsync();
             return data;
 
+        }
+
+        public Task<bool> InsertShopUser(ShopUserViewModel request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -11,5 +11,7 @@ namespace Repository.Interface
     {
         public Task<List<ShopUserViewModel>> GetShopUser();
         public Task<bool> CreateShop(ShopCreateModel request);
+        public Task<long> GetUserId(UserLoginModel request);
+        public Task<bool> InsertShopUser(ShopUserViewModel request);
     }
 }

@@ -11,5 +11,6 @@ namespace Service.Interface
     {
         public Task<List<ShopUserViewModel>> GetShopUser();
         public Task<bool> CreateShop(ShopCreateModel request);
+        
     }
 }

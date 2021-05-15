@@ -21,14 +21,19 @@ namespace WebApplication.Controllers
     public class LoginController : Controller
     {
         public readonly IUserService _userService;
-        public readonly IConfiguration configuration;
+        public readonly IConfiguration _configuration;
         public LoginController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
-            this.configuration = configuration;
+            _configuration = configuration;
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Login");
         }
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -44,36 +49,35 @@ namespace WebApplication.Controllers
             var token = await _userService.LoginUser(request);
             if (string.IsNullOrEmpty(token))
             {
-                ModelState.AddModelError("", "Incorrect mobile or password");
+                ModelState.AddModelError(string.Empty, "Incorrect mobile or password");
                 return View();
             }
             else
             {
-                var userPrincipal = this.ValidateToken(token);
+                // Giải mã token 
+                IdentityModelEventSource.ShowPII = true;
+                SecurityToken securityToken;
+                TokenValidationParameters tokenValidatio = new TokenValidationParameters();
+                tokenValidatio.ValidateLifetime = true;
+                tokenValidatio.ValidAudience = _configuration["JWT:ValidAudience"];
+                tokenValidatio.ValidIssuer = _configuration["JWT:ValidIssuer"];
+                tokenValidatio.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+                ClaimsPrincipal claimsPrincipal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidatio, out securityToken);
+
                 var authenProperties = new AuthenticationProperties
                 {
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(30),
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(150),// trạng thái phiên xác thực
                     IsPersistent = false
                 };
-                HttpContext.Session.SetString("Token", token);
+
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    userPrincipal, authenProperties);
+                    claimsPrincipal, authenProperties);
+                
 
                 return RedirectToAction("Index", "Home");
             }
-            
+
         }
-        private ClaimsPrincipal ValidateToken(string ValidToken)
-        {
-            IdentityModelEventSource.ShowPII = true;
-            SecurityToken securityToken;
-            TokenValidationParameters tokenValidatio = new TokenValidationParameters();
-            tokenValidatio.ValidateLifetime = true;
-            tokenValidatio.ValidAudience = configuration["JWT:ValidAudience"];
-            tokenValidatio.ValidIssuer = configuration["JWT:ValidIssuer"];
-            tokenValidatio.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
-            ClaimsPrincipal claimsPrincipal = new JwtSecurityTokenHandler().ValidateToken(ValidToken, tokenValidatio, out securityToken);
-            return claimsPrincipal;
-        }
+
     }
 }
