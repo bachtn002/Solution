@@ -31,7 +31,7 @@ namespace Repository.Repository
 
         public async Task<bool> RegisterUser(UserRegisterModel request)
         {
-            /*var user = await _dataDbContext.TUsers.FindAsync(request.Mobile);*/
+            
             if (await _dataDbContext.TUsers.AnyAsync(x => x.Mobile == request.Mobile))
             {
                 return false;
@@ -51,7 +51,7 @@ namespace Repository.Repository
 
             });
             var result = await _dataDbContext.SaveChangesAsync();
-            if (result < 0)
+            if (result <= 0)
             {
                 return false;
             }
@@ -85,17 +85,9 @@ namespace Repository.Repository
             {
                 var claims = new List<Claim>
                 {
-                /*new Claim(ClaimTypes.Name,user.Mobile),
-                new Claim(ClaimTypes.Hash, user.PasswordHash),
-                new Claim(ClaimTypes.GivenName, user.FullName),*/
+                new Claim(ClaimTypes.Name,user.Mobile),
                 new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString())
                 };
-                /*var identity = new ClaimsIdentity(DefaultAuthenticationTypes.ApplicationCookie);
-                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()));*/
-
-                /*var claimsPrincipal = new ClaimsPrincipal(identity);
-                Thread.CurrentPrincipal = claimsPrincipal;*/
-
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
                 var token = new JwtSecurityToken
                     (
@@ -113,12 +105,8 @@ namespace Repository.Repository
                 return null;
             }
         }
-
         public long GetUserId()
         {
-            /*var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = Convert.ToInt64(identity.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
-                return userId;*/
             var userId = Convert.ToInt64(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return userId;
         }

@@ -18,15 +18,26 @@ namespace Repository.Model
         [Required(ErrorMessage ="Password is required")]
         [MinLength(6,ErrorMessage ="Password at least 6 character")]
         public string PasswordHash { get; set; }
-        
+
+        [Display(Name ="Confirm password")]
+        [DataType(DataType.Password)]
+        [Compare("PasswordHash",ErrorMessage ="Confirm password incorrect")]
+        public string ConfirmPassword { get; set; }
+
         [Display(Name = "Name")]
+        [Required(ErrorMessage ="Full name is required")]
         public string FullName { get; set; }
+
         [Display(Name = "Gender")]
         public sbyte GenderId { get; set; }
+
         [Display(Name = "Date of birth")]
         [DataType(DataType.Date)]
+        [Required(ErrorMessage ="DOB is required")]
         public DateTime DateOfBirth { get; set; }
+
         [Display(Name = "Choose a photo for your avatar")]
+        [Required(ErrorMessage ="Choose a photo")]
         public string Avatar { get; set; }
         
        
