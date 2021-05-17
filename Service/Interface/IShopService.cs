@@ -9,8 +9,12 @@ namespace Service.Interface
 {
     public interface IShopService
     {
-        public Task<List<ShopUserViewModel>> GetShopUser();
+        public Task<List<ShopViewModel>> GetShopUser();
         public Task<bool> CreateShop(ShopCreateModel request);
-        
+        public Task<bool> InsertShopUser();
+
+        public Task<bool> CreateCollab(UserRegisterModel request);
+
+        public Task<List<CollabViewModel>> GetCollabByShopId(long shopId);
     }
 }

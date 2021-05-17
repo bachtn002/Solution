@@ -37,11 +37,12 @@ namespace WebApplication.Controllers
                 return View(request);
             }
             var result = await _userService.RegisterUser(request);
-            if (result == true)
+            if (result == false)
             {
-                return RedirectToAction("Login","Login");
+                ModelState.AddModelError(string.Empty, "Mobile already exists");
+                return View();
             }
-            return View();
+            return RedirectToAction("Login","Login");
         }
         [HttpGet]
         public IActionResult Create()

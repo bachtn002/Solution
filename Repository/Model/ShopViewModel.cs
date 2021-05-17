@@ -7,17 +7,22 @@ using System.Threading.Tasks;
 
 namespace Repository.Model
 {
-    public class ShopUserViewModel
+    public class ShopViewModel
     {
-        [Display(Name="Name")]
+        public long ShopId { get; set; }
+
+        [Display(Name = "Name")]
         public string FullName { get; set; }
-        [Display(Name ="Role")]
+
+        [Display(Name = "Role")]
         public string RoleName { get; set; }
-        [Display(Name ="Shop name")]
+
+        [Display(Name = "Shop name")]
         public string Name { get; set; }
+
         [Display(Name = "Shop status")]
         public string ShopStatusName { get; set; }
-        [Display(Name = "Date created")]
-        public DateTime CreatedUtcDate { get; set; }
+
+        
     }
 }

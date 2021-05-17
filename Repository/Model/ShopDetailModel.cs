@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Model
 {
-    public class Response
+    public class ShopDetailModel
     {
-        public string Status { get; set; }
-        public string Message { get; set; }
+
     }
 }

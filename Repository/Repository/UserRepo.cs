@@ -1,5 +1,4 @@
 ﻿using Data.Models;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -46,7 +45,7 @@ namespace Repository.Repository
                 Avatar = request.Avatar,
                 DateOfBirth = request.DateOfBirth,
                 UserStatusId = 1,
-                RoleId = 1,
+                /*RoleId = 1,*/
                 CreatedUtcDate = DateTime.Now
 
             });
@@ -72,7 +71,6 @@ namespace Repository.Repository
                 DateOfBirth = x.p.DateOfBirth,
                 GenderName = x.g.GenderName,
                 RoleName = x.r.RoleName
-
             }).ToListAsync();
             return data;
         }

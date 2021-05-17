@@ -19,13 +19,38 @@ namespace WebApplication.Controllers
         {
             _shopService = shopService;
         }
-        [HttpGet]
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CreateCollab()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateCollab(UserRegisterModel request)
+        {
+            var result = await _shopService.CreateCollab(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "Mobile already exists");
+                return View();
+            }
+            return RedirectToAction("Index","Shop");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Show()
         {
             var result = await _shopService.GetShopUser();
             return View(result);
         }
+
+        
         [HttpGet]
         public IActionResult Create()
         {
@@ -39,10 +64,13 @@ namespace WebApplication.Controllers
                 return View(request);
             }
             var result = await _shopService.CreateShop(request);
+            var resultInsert = await _shopService.InsertShopUser();
 
-            if (result == true)
+            if (result == true && resultInsert==true)
                 return RedirectToAction("Index");
             return View();
         }
+
+        
     }
 }

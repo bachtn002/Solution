@@ -27,16 +27,16 @@ namespace WebApplication.Controllers
             _userService = userService;
             _configuration = configuration;
         }
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Login");
         }
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            /*await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);*/
             return View();
         }
         [HttpPost]
@@ -72,8 +72,6 @@ namespace WebApplication.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     claimsPrincipal, authenProperties);
-                
-
                 return RedirectToAction("Index", "Home");
             }
 

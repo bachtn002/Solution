@@ -9,9 +9,10 @@ namespace Repository.Interface
 {
     public interface IShopRepo
     {
-        public Task<List<ShopUserViewModel>> GetShopUser();
+        public Task<List<ShopViewModel>> GetShopUser();
         public Task<bool> CreateShop(ShopCreateModel request);
-        public Task<long> GetUserId(UserLoginModel request);
-        public Task<bool> InsertShopUser(ShopUserViewModel request);
+        public Task<bool> InsertShopUser();
+        public Task<bool> CreateCollab(UserRegisterModel request);
+        public Task<List<CollabViewModel>> GetCollabByShopId(long shopId);
     }
 }
