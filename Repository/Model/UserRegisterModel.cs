@@ -9,6 +9,8 @@ namespace Repository.Model
 {
     public class UserRegisterModel
     {
+        public long ShopId { get; set; }
+
         [Required(ErrorMessage ="Mobile is required")]
         [RegularExpression(@"(^\d+$)",ErrorMessage ="Mobile contains only number 0-9")]
         public string Mobile { get; set; }

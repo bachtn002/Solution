@@ -45,7 +45,6 @@ namespace Repository.Repository
                 Avatar = request.Avatar,
                 DateOfBirth = request.DateOfBirth,
                 UserStatusId = 1,
-                /*RoleId = 1,*/
                 CreatedUtcDate = DateTime.Now
 
             });
@@ -83,8 +82,9 @@ namespace Repository.Repository
             {
                 var claims = new List<Claim>
                 {
-                new Claim(ClaimTypes.Name,user.Mobile),
-                new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString())
+                new Claim(ClaimTypes.Name,user.FullName),
+                new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
+                new Claim(ClaimTypes.GivenName, user.Mobile)
                 };
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
                 var token = new JwtSecurityToken

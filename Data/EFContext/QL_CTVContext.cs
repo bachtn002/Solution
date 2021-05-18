@@ -32,7 +32,7 @@ namespace Data.Models
         public virtual DbSet<TRole> TRoles { get; set; }
         public virtual DbSet<TShop> TShops { get; set; }
         public virtual DbSet<TShopUser> TShopUsers { get; set; }
-        public  DbSet<TUser> TUsers { get; set; }
+        public virtual DbSet<TUser> TUsers { get; set; }
         public virtual DbSet<TmCustomerType> TmCustomerTypes { get; set; }
         public virtual DbSet<TmGender> TmGenders { get; set; }
         public virtual DbSet<TmOrderStatus> TmOrderStatuses { get; set; }

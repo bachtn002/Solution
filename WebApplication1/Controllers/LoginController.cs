@@ -66,7 +66,7 @@ namespace WebApplication.Controllers
 
                 var authenProperties = new AuthenticationProperties
                 {
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(150),// trạng thái phiên xác thực
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(600),// trạng thái phiên xác thực
                     IsPersistent = false
                 };
 

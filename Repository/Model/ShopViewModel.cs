@@ -11,7 +11,7 @@ namespace Repository.Model
     {
         public long ShopId { get; set; }
 
-        [Display(Name = "Name")]
+        [Display(Name = "Owner")]
         public string FullName { get; set; }
 
         [Display(Name = "Role")]
@@ -22,7 +22,9 @@ namespace Repository.Model
 
         [Display(Name = "Shop status")]
         public string ShopStatusName { get; set; }
+        [Display(Name = "Address")]
+        public string Address { get; set; }
 
-        
+
     }
 }

@@ -17,9 +17,9 @@ namespace Service.Service
             _shopRepo = shopRepo;
         }
 
-        public Task<bool> CreateCollab(UserRegisterModel request)
+        public Task<bool> CreateCollab(long shopId, UserRegisterModel request)
         {
-            return _shopRepo.CreateCollab(request);
+            return _shopRepo.CreateCollab(request.ShopId, request);
         }
 
         public Task<bool> CreateShop(ShopCreateModel request)
@@ -27,19 +27,46 @@ namespace Service.Service
             return _shopRepo.CreateShop(request);
         }
 
+        public async Task<bool> DeleteShop(ShopCreateModel request)
+        {
+            return await _shopRepo.DeleteShop(request);
+        }
+
+        public async Task<ShopCreateModel> GetShopDetails(long shopId)
+        {
+            return await _shopRepo.GetShopDetails(shopId);
+        }
+
+        public async Task<UserRegisterModel> GetCollab(long shopId)
+        {
+            return await _shopRepo.GetCollab(shopId);
+        }
+
         public async Task<List<CollabViewModel>> GetCollabByShopId(long shopId)
         {
             return await _shopRepo.GetCollabByShopId(shopId);
         }
+
+        
 
         public async Task<List<ShopViewModel>> GetShopUser()
         {
             return await _shopRepo.GetShopUser();
         }
 
+        public async Task<ShopCreateModel> GetUpdateShop(long shopId)
+        {
+            return await _shopRepo.GetUpdateShop(shopId);
+        }
+
         public async Task<bool> InsertShopUser()
         {
             return await _shopRepo.InsertShopUser();
+        }
+
+        public async Task<bool> UpdateShop( ShopCreateModel request)
+        {
+            return await _shopRepo.UpdateShop(request);
         }
     }
 }

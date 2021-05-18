@@ -1,4 +1,5 @@
 ﻿using Data.EFContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository.Model;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
 
@@ -25,11 +27,13 @@ namespace WebApplication.Controllers
             return View(result);
         }
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(UserRegisterModel request)
         {
             if (!ModelState.IsValid)

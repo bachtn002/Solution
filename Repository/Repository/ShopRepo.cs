@@ -22,26 +22,34 @@ namespace Repository.Repository
             _userRepo = userRepo;
         }
 
-        public async Task<bool> CreateCollab(UserRegisterModel request)
+        public async Task<bool> CreateCollab(long shopId, UserRegisterModel request)
         {
             var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.Mobile == request.Mobile);
             if (user != null)
             {
-                var userId = user.UserId;
+                return false;
+            }
+            else
+            {
+                await _dataDbContext.TUsers.AddAsync(new TUser()
+                {
+                    Mobile = request.Mobile,
+                    FullName = request.FullName,
+                    PasswordHash = "123456",
+                    GenderId = request.GenderId,
+                    DateOfBirth = request.DateOfBirth,
+                    Avatar = request.Avatar,
+                    UserStatusId = 1,
+                    CreatedUtcDate = DateTime.UtcNow
+                });
                 await _dataDbContext.TShopUsers.AddAsync(new TShopUser()
                 {
-
+                    ShopId = shopId,
+                    RoleId = 2,
+                    UserId = await _dataDbContext.TUsers.Select(x => x.UserId).MaxAsync() + 1,
+                    CreatedUtcDate = DateTime.UtcNow
                 });
             }
-            await _dataDbContext.TUsers.AddAsync(new TUser()
-            {
-                Mobile = request.Mobile,
-                FullName = request.FullName,
-                PasswordHash = "123456",
-                GenderId = request.GenderId,
-                DateOfBirth = request.DateOfBirth,
-                Avatar = request.Avatar
-            });
             var result = await _dataDbContext.SaveChangesAsync();
             if (result <= 0)
             {
@@ -80,17 +88,17 @@ namespace Repository.Repository
                         join r in _dataDbContext.TRoles on su.RoleId equals r.RoleId
                         join g in _dataDbContext.TmGenders on u.GenderId equals g.GenderId
                         join us in _dataDbContext.TmUserStatuses on u.UserStatusId equals us.UserStatusId
-                        where s.ShopId == shopId
+                        where s.ShopId == shopId && su.RoleId == 2
                         select new { u, su, s, r, g, us };
             var data = await query.Select(x => new CollabViewModel()
             {
-                FullName=x.u.FullName,
-                Mobile=x.u.Mobile,
-                Status=x.us.UserStatusName,
-                GenderName=x.g.GenderName,
-                DOB=x.u.DateOfBirth,
-                RoleName=x.r.RoleName,
-                CreatedUtcDate=x.su.CreatedUtcDate
+                FullName = x.u.FullName,
+                Mobile = x.u.Mobile,
+                Status = x.us.UserStatusName,
+                GenderName = x.g.GenderName,
+                DOB = x.u.DateOfBirth,
+                RoleName = x.r.RoleName,
+                CreatedUtcDate = x.su.CreatedUtcDate
             }).ToListAsync();
             return data;
         }
@@ -102,16 +110,17 @@ namespace Repository.Repository
                         join s in _dataDbContext.TShops on su.ShopId equals s.ShopId
                         join ss in _dataDbContext.TmShopStatuses on s.ShopStatusId equals ss.ShopStatusId
                         join r in _dataDbContext.TRoles on su.RoleId equals r.RoleId
-                        where u.UserId == _userRepo.GetUserId()
+                        where u.UserId == _userRepo.GetUserId() && s.IsDelete == 0
                         select new { u, su, s, ss, r };
 
             var data = await query.Select(x => new ShopViewModel()
             {
-                FullName = x.u.FullName,
+
                 RoleName = x.r.RoleName,
                 Name = x.s.Name,
                 ShopStatusName = x.ss.ShopStatusName,
-                ShopId = x.s.ShopId
+                ShopId = x.s.ShopId,
+                Address = x.s.Address
             }).ToListAsync();
             return data;
         }
@@ -132,6 +141,122 @@ namespace Repository.Repository
                 return false;
             }
             return true;
+        }
+
+        public async Task<UserRegisterModel> GetCollab(long shopId)
+        {
+
+            var userId = await (from s in _dataDbContext.TShops where s.ShopId == shopId select s.UserId).FirstOrDefaultAsync();
+
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == userId);
+
+            var userRM = new UserRegisterModel()
+            {
+                ShopId = shopId,
+                Mobile = user.Mobile,
+                FullName = user.FullName,
+                GenderId = user.GenderId,
+                DateOfBirth = user.DateOfBirth,
+                Avatar = user.Avatar
+            };
+            return userRM;
+        }
+
+        public async Task<bool> UpdateShop(ShopCreateModel request)
+        {
+            var shop = await _dataDbContext.TShops.SingleOrDefaultAsync(x => x.ShopId == request.ShopId);
+            if (shop != null)
+            {
+                shop.Name = request.Name;
+                shop.ShopId = request.ShopId;
+                shop.Address = request.Address;
+                shop.Avatar = request.Avatar;
+                shop.Description = request.Description;
+                shop.ShopStatusId = request.ShopStatusId;
+                shop.ModifiedUtcDate = DateTime.UtcNow;
+            }
+            _dataDbContext.TShops.Update(shop);
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<ShopCreateModel> GetUpdateShop(long shopId)
+        {
+            var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
+            var shopVM = new ShopCreateModel()
+            {
+                ShopId = shopId,
+                Name = shop.Name,
+                Address = shop.Address,
+                Avatar = shop.Avatar,
+                Description = shop.Description,
+                ShopStatusId = shop.ShopStatusId
+            };
+            return shopVM;
+        }
+
+        public async Task<bool> DeleteShop(ShopCreateModel request)
+        {
+            var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == request.ShopId);
+            if (shop != null)
+            {
+                shop.IsDelete = 1;
+                shop.ModifiedUtcDate = DateTime.UtcNow;
+            }
+            _dataDbContext.TShops.Update(shop);
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<ShopCreateModel> GetShopDetails(long shopId)
+        {
+            var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
+            /*var query = from u in _dataDbContext.TUsers
+                        join s in _dataDbContext.TShops on u.UserId equals s.UserId
+                        join tmss in _dataDbContext.TmShopStatuses on s.ShopStatusId equals tmss.ShopStatusId
+                        join su in _dataDbContext.TShopUsers on s.ShopId equals su.ShopId
+                        //join r in _dataDbContext.TRoles on su.RoleId equals r.RoleId
+                        where s.ShopId == shopId *//*&& r.RoleId==2*//*
+                        select new { u, s, tmss, su };*/
+            /*var data = await query.Select(x => new ShopCreateModel()
+            {
+                ShopId=x.s.ShopId,
+                Name=x.s.Name,
+                Address=x.s.Address,
+                Avatar=x.s.Avatar,
+                Description=x.s.Description,
+                ShopStatusName=x.tmss.ShopStatusName,
+                CreatedUtcDate=x.s.CreatedUtcDate
+
+            }).ToListAsync();*/
+            var result = new ShopCreateModel()
+            {
+                Name = shop.Name,
+                ShopStatusName = (from tmss in _dataDbContext.TmShopStatuses
+                                  where tmss.ShopStatusId == shop.ShopStatusId
+                                  select tmss.ShopStatusName).FirstOrDefault(),
+                Address = shop.Address,
+                Avatar = shop.Avatar,
+                Description = shop.Description,
+                FullName = (from u in _dataDbContext.TUsers
+                            where u.UserId == shop.UserId
+                            select u.FullName).FirstOrDefault(),
+                CreatedUtcDate=shop.CreatedUtcDate,
+                SumUser=(from s in _dataDbContext.TShops
+                         join su in _dataDbContext.TShopUsers on s.ShopId equals su.ShopId
+                         where s.ShopId==shop.ShopId && su.RoleId==2
+                         select new {su }).Count()
+            };
+            return result;
+
         }
     }
 }

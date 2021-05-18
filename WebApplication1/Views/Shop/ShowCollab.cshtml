@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Repository.Model.CollabViewModel>
+
+@{
+    ViewData["Title"] = "ShowCollab";
+}
+
+<h3>Manage Collaborator</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GenderName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DOB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedUtcDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GenderName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DOB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedUtcDate)
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-link p-0" href="#" data-toggle="dropdown">Action</a>
+                        <div class="dropdown-menu dropdown-menu-lg-left">
+                            <button class="dropdown-item">
+                                @Html.ActionLink("Edit", "EditCollab", new {userId=item.UserId})
+                            </button>
+                            <button class="dropdown-item">
+                                @Html.ActionLink("Details", "DetailsCollab", new {userId=item.UserId})
+                            </button>
+                            <button class="dropdown-item">
+                                @Html.ActionLink("Delete", "DeleteCollab", new {userId=item.UserId})
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

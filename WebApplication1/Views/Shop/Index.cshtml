@@ -1,13 +1,86 @@
-﻿
+﻿@model IEnumerable<Repository.Model.ShopViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Shop";
 }
 
-<h1>Shop</h1>
+<h3>Shop Manage</h3>
+<br />
+<br />
+<div class="d-flex justify-content-end">
+    <a class="btn btn-success" asp-action="Create">Create New Shop</a>
+</div>
+<br/>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShopStatusName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShopStatusName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                <div class="dropdown">
+                    <a class="btn btn-link p-0" href="#" data-toggle="dropdown">
+                        Action
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg-left">
+                        <button class="dropdown-item">
+                            <i class=""></i>
+                            @Html.ActionLink("Edit", "Edit", new { shopId = item.ShopId })
+                        </button>
+                        <button class="dropdown-item">
+                            <i class=""></i>
+                            @Html.ActionLink("Details", "Details", new { shopId = item.ShopId })
+                        </button>
+                        <button class="dropdown-item">
+                            <i class=""></i>
+                            @Html.ActionLink("Delete", "Delete", new { shopId = item.ShopId })
+                        </button>
+                        <button class="dropdown-item">
+                            <i class=""></i>
+                            @Html.ActionLink("Collaborators", "ShowCollab", new { shopId = item.ShopId })
+                        </button>
+                        <button class="dropdown-item">
+                            <i class=""></i>
+                            @Html.ActionLink("Add Collaborator", "CreateCollab", new { shopId = item.ShopId })
+                        </button>
 
-<p>
-    <a asp-action="Create">Create New Shop</a>
-    <br />
-    <a asp-action="Show">Manage Shop</a>
-</p>
+                    </div>
+
+
+                </div>
+            </td>
+
+        </tr>
+        }
+    </tbody>
+</table>
+
+

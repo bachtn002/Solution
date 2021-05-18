@@ -12,9 +12,13 @@ namespace Service.Interface
         public Task<List<ShopViewModel>> GetShopUser();
         public Task<bool> CreateShop(ShopCreateModel request);
         public Task<bool> InsertShopUser();
-
-        public Task<bool> CreateCollab(UserRegisterModel request);
-
+        public Task<bool> CreateCollab(long shopId, UserRegisterModel request);
         public Task<List<CollabViewModel>> GetCollabByShopId(long shopId);
+        public Task<UserRegisterModel> GetCollab(long shopId);
+        public Task<ShopCreateModel> GetUpdateShop(long shopId);
+        public Task<bool> UpdateShop(ShopCreateModel request);
+        public Task<bool> DeleteShop(ShopCreateModel request);
+        public Task<ShopCreateModel> GetShopDetails(long shopId);
+        
     }
 }
