@@ -1,4 +1,5 @@
 ﻿using Repository.Model;
+using Repository.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Service.Interface
         public Task<bool> CreateShop(ShopCreateModel request);
         public Task<bool> InsertShopUser();
         public Task<bool> CreateCollab(long shopId, UserRegisterModel request);
-        public Task<List<CollabViewModel>> GetCollabByShopId(long shopId);
+        public Task<PagedResult<CollabViewModel>> GetCollabByShopId(long shopId);
         public Task<UserRegisterModel> GetCollab(long shopId);
         public Task<ShopCreateModel> GetUpdateShop(long shopId);
         public Task<bool> UpdateShop(ShopCreateModel request);

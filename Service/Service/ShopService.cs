@@ -1,5 +1,6 @@
 ﻿using Repository.Interface;
 using Repository.Model;
+using Repository.Repository;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace Service.Service
             return await _shopRepo.GetCollab(shopId);
         }
 
-        public async Task<List<CollabViewModel>> GetCollabByShopId(long shopId)
+        public async Task<PagedResult<CollabViewModel>> GetCollabByShopId(long shopId)
         {
             return await _shopRepo.GetCollabByShopId(shopId);
         }

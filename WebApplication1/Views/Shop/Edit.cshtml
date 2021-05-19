@@ -50,15 +50,13 @@
                 <span asp-validation-for="ShopStatusId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <button class="btn btn-success" onclick="history.back()">Back to List</button>
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

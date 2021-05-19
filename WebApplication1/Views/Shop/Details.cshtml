@@ -4,10 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h3>Shop Detail</h3>
+<h3>Shop Details</h3>
 
 <div>
-    
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -17,17 +16,36 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedUtcDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedUtcDate)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FullName)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FullName)
         </dd>
+        @*<dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.ShopId)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.ShopId)
+            </dd>*@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedUtcDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedUtcDate)
+        </dd>
+        @*<dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.ModifiedUtcDate)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.ModifiedUtcDate)
+            </dd>*@
+        @*<dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.UserId)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.UserId)
+            </dd>*@
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Address)
         </dt>
@@ -46,12 +64,14 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Avatar)
         </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ShopStatusName)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ShopStatusName)
         </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SumUser)
         </dt>
@@ -61,5 +81,9 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-success" asp-action="Index">Back</a>
+    <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Shop", new { shopId = Model.ShopId})'">Edit</button>
+    <button class="btn btn-info" onclick="location.href='@Url.Action("ShowCollab", "Shop", new { shopId = Model.ShopId})'">Colaborators</button>
+    <button class="btn btn-info" onclick="location.href='@Url.Action("ShowCollab", "Shop", new { shopId = Model.ShopId})'">Products</button>
+
 </div>

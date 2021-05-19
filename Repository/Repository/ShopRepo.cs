@@ -78,10 +78,14 @@ namespace Repository.Repository
             return true;
         }
 
-        public async Task<List<CollabViewModel>> GetCollabByShopId(long shopId)
+        public async Task<PagedResult<CollabViewModel>> GetCollabByShopId(long shopId)
         {
-            //var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
+            /*var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
 
+            var result = new CollabViewModel()
+            {
+                ShopId=shopId
+            };*/
             var query = from u in _dataDbContext.TUsers
                         join su in _dataDbContext.TShopUsers on u.UserId equals su.UserId
                         join s in _dataDbContext.TShops on su.ShopId equals s.ShopId
@@ -92,6 +96,7 @@ namespace Repository.Repository
                         select new { u, su, s, r, g, us };
             var data = await query.Select(x => new CollabViewModel()
             {
+                ShopId = x.s.ShopId,
                 FullName = x.u.FullName,
                 Mobile = x.u.Mobile,
                 Status = x.us.UserStatusName,
@@ -100,7 +105,12 @@ namespace Repository.Repository
                 RoleName = x.r.RoleName,
                 CreatedUtcDate = x.su.CreatedUtcDate
             }).ToListAsync();
-            return data;
+            var pagedResult = new PagedResult<CollabViewModel>()
+            {
+                Items = data
+            };
+            return pagedResult;
+            /*return result;*/
         }
 
         public async Task<List<ShopViewModel>> GetShopUser()
@@ -219,26 +229,10 @@ namespace Repository.Repository
         public async Task<ShopCreateModel> GetShopDetails(long shopId)
         {
             var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
-            /*var query = from u in _dataDbContext.TUsers
-                        join s in _dataDbContext.TShops on u.UserId equals s.UserId
-                        join tmss in _dataDbContext.TmShopStatuses on s.ShopStatusId equals tmss.ShopStatusId
-                        join su in _dataDbContext.TShopUsers on s.ShopId equals su.ShopId
-                        //join r in _dataDbContext.TRoles on su.RoleId equals r.RoleId
-                        where s.ShopId == shopId *//*&& r.RoleId==2*//*
-                        select new { u, s, tmss, su };*/
-            /*var data = await query.Select(x => new ShopCreateModel()
-            {
-                ShopId=x.s.ShopId,
-                Name=x.s.Name,
-                Address=x.s.Address,
-                Avatar=x.s.Avatar,
-                Description=x.s.Description,
-                ShopStatusName=x.tmss.ShopStatusName,
-                CreatedUtcDate=x.s.CreatedUtcDate
-
-            }).ToListAsync();*/
+            
             var result = new ShopCreateModel()
             {
+                ShopId=shop.ShopId,
                 Name = shop.Name,
                 ShopStatusName = (from tmss in _dataDbContext.TmShopStatuses
                                   where tmss.ShopStatusId == shop.ShopStatusId

@@ -67,6 +67,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowCollab(long shopId)
         {
+            ViewBag.ShopId = shopId;
             var result = await _shopService.GetCollabByShopId(shopId);
             return View(result);
         }
@@ -74,6 +75,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateCollab(long shopId)
         {
+            
             var result = await _shopService.GetCollab(shopId);
             var user = new UserRegisterModel()
             {
@@ -84,13 +86,17 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCollab(UserRegisterModel request)
         {
+            /*if (!ModelState.IsValid)
+            {
+                return View(request);
+            }*/
             var result = await _shopService.CreateCollab(request.ShopId, request);
             if (result == false)
             {
                 ModelState.AddModelError(string.Empty, "Mobile is already");
                 return View();
             }
-            return RedirectToAction("ShowCollab", "Shop");
+            return RedirectToAction("ShowCollab", "Shop", new {shopId= request.ShopId });
         }
 
         [HttpGet]

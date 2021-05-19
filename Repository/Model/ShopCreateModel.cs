@@ -15,12 +15,16 @@ namespace Repository.Model
         public DateTime ModifiedUtcDate { get; set; }
         public long UserId { get; set; }
         [Display(Name="Name Shop")]
+        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
         [Display(Name="Address")]
+        [Required(ErrorMessage ="Address is required")]
         public string Address { get; set; }
         [Display(Name ="Description")]
+        [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
         [Display(Name= "Choose a photo for your avatar")]
+        [Required(ErrorMessage = "Photo is required")]
         public string Avatar { get; set; }
         [Display(Name="Shop Status")]
         public sbyte ShopStatusId { get; set; }
@@ -28,7 +32,7 @@ namespace Repository.Model
         public string ShopStatusName { get; set; }
         [Display(Name="Owner")]
         public string FullName { get; set; }
-        [Display(Name= "Number of collaborators")]
+        [Display(Name= "Total collaborators")]
         public long SumUser { get; set; }
     }
 }
