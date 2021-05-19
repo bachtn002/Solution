@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Model;
+using Repository.Model.ShopModel;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,42 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> DeleteCollab(long userId, long shopId)
+        {
+            var result = await _shopService.GetCollabUpdate(userId, shopId);
+            return View(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCollab(CollabUpdateModel request)
+        {
+            var result = await _shopService.DeleteCollab(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "Delete Failed");
+                return View();
+            }
+            return RedirectToAction("ShowCollab", "Shop", new { shopId = request.ShopId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult>EditCollab(long userId, long shopId)
+        {
+            var result = await _shopService.GetCollabUpdate(userId, shopId);
+            return View(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult>EditCollab(CollabUpdateModel request)
+        {
+            var result = await _shopService.UpdateCollab(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "Update Failed");
+                return View();
+            }
+            return RedirectToAction("ShowCollab", "Shop", new { shopId = request.ShopId });
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(long shopId)
         {
             var result = await _shopService.GetUpdateShop(shopId);
@@ -76,20 +113,20 @@ namespace WebApplication.Controllers
         public async Task<IActionResult> CreateCollab(long shopId)
         {
             
-            var result = await _shopService.GetCollab(shopId);
-            var user = new UserRegisterModel()
+            var result = await _shopService.GetCollabCreateModel(shopId);
+            var user = new CollabCreateModel()
             {
                 ShopId=result.ShopId
             };
             return View(user);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateCollab(UserRegisterModel request)
+        public async Task<IActionResult> CreateCollab(CollabCreateModel request)
         {
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(request);
-            }*/
+            }
             var result = await _shopService.CreateCollab(request.ShopId, request);
             if (result == false)
             {

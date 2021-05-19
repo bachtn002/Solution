@@ -70,13 +70,13 @@
                         <a class="btn btn-link p-0" href="#" data-toggle="dropdown">Action</a>
                         <div class="dropdown-menu dropdown-menu-lg-left">
                             <button class="dropdown-item">
-                                @Html.ActionLink("Edit", "EditCollab", new { userId = item.UserId })
+                                @Html.ActionLink("Edit", "EditCollab", new { userId = item.UserId,shopId=item.ShopId })
                             </button>
                             <button class="dropdown-item">
-                                @Html.ActionLink("Details", "DetailsCollab", new { userId = item.UserId })
+                                @Html.ActionLink("Details", "DetailsCollab", new { userId = item.UserId,shopId=item.ShopId })
                             </button>
                             <button class="dropdown-item">
-                                @Html.ActionLink("Delete", "DeleteCollab", new { userId = item.UserId })
+                                @Html.ActionLink("Delete", "DeleteCollab", new { userId = item.UserId,shopId=item.ShopId })
                             </button>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using Repository.Model;
+using Repository.Model.ShopModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Repository.Repository
             _userRepo = userRepo;
         }
 
-        public async Task<bool> CreateCollab(long shopId, UserRegisterModel request)
+        public async Task<bool> CreateCollab(long shopId, CollabCreateModel request)
         {
             var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.Mobile == request.Mobile);
             if (user != null)
@@ -80,22 +81,18 @@ namespace Repository.Repository
 
         public async Task<PagedResult<CollabViewModel>> GetCollabByShopId(long shopId)
         {
-            /*var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
-
-            var result = new CollabViewModel()
-            {
-                ShopId=shopId
-            };*/
+            
             var query = from u in _dataDbContext.TUsers
                         join su in _dataDbContext.TShopUsers on u.UserId equals su.UserId
                         join s in _dataDbContext.TShops on su.ShopId equals s.ShopId
                         join r in _dataDbContext.TRoles on su.RoleId equals r.RoleId
                         join g in _dataDbContext.TmGenders on u.GenderId equals g.GenderId
                         join us in _dataDbContext.TmUserStatuses on u.UserStatusId equals us.UserStatusId
-                        where s.ShopId == shopId && su.RoleId == 2
+                        where s.ShopId == shopId && su.RoleId == 2 && su.IsDelete==0
                         select new { u, su, s, r, g, us };
             var data = await query.Select(x => new CollabViewModel()
             {
+                UserId=x.su.UserId,
                 ShopId = x.s.ShopId,
                 FullName = x.u.FullName,
                 Mobile = x.u.Mobile,
@@ -153,14 +150,11 @@ namespace Repository.Repository
             return true;
         }
 
-        public async Task<UserRegisterModel> GetCollab(long shopId)
+        public async Task<CollabCreateModel> GetCollabCreateModel(long shopId)
         {
-
             var userId = await (from s in _dataDbContext.TShops where s.ShopId == shopId select s.UserId).FirstOrDefaultAsync();
-
             var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == userId);
-
-            var userRM = new UserRegisterModel()
+            var userCM = new CollabCreateModel()
             {
                 ShopId = shopId,
                 Mobile = user.Mobile,
@@ -169,7 +163,7 @@ namespace Repository.Repository
                 DateOfBirth = user.DateOfBirth,
                 Avatar = user.Avatar
             };
-            return userRM;
+            return userCM;
         }
 
         public async Task<bool> UpdateShop(ShopCreateModel request)
@@ -229,10 +223,10 @@ namespace Repository.Repository
         public async Task<ShopCreateModel> GetShopDetails(long shopId)
         {
             var shop = await _dataDbContext.TShops.FirstOrDefaultAsync(x => x.ShopId == shopId);
-            
+
             var result = new ShopCreateModel()
             {
-                ShopId=shop.ShopId,
+                ShopId = shop.ShopId,
                 Name = shop.Name,
                 ShopStatusName = (from tmss in _dataDbContext.TmShopStatuses
                                   where tmss.ShopStatusId == shop.ShopStatusId
@@ -243,15 +237,68 @@ namespace Repository.Repository
                 FullName = (from u in _dataDbContext.TUsers
                             where u.UserId == shop.UserId
                             select u.FullName).FirstOrDefault(),
-                CreatedUtcDate=shop.CreatedUtcDate,
-                SumUser=(from s in _dataDbContext.TShops
-                         join su in _dataDbContext.TShopUsers on s.ShopId equals su.ShopId
-                         where s.ShopId==shop.ShopId && su.RoleId==2
-                         select new {su }).Count()
+                CreatedUtcDate = shop.CreatedUtcDate,
+                SumUser = (from s in _dataDbContext.TShops
+                           join su in _dataDbContext.TShopUsers on s.ShopId equals su.ShopId
+                           where s.ShopId == shop.ShopId && su.RoleId == 2
+                           select new { su }).Count()
             };
             return result;
 
         }
+
+        public async Task<bool> UpdateCollab(CollabUpdateModel request)
+        {
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == request.UserId);
+            
+            if (user != null)
+            {
+                user.FullName = request.FullName;
+                user.UserStatusId = request.UserStatusId;
+                user.ModifiedUtcDate = DateTime.UtcNow;
+            }
+            _dataDbContext.TUsers.Update(user);
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        public async Task<CollabUpdateModel> GetCollabUpdate(long userId, long shopId)
+        {
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == userId);
+            var result = new CollabUpdateModel()
+            {
+                ShopId=shopId,
+                UserId = userId,
+                FullName = user.FullName,
+                UserStatusId=user.UserStatusId
+            };
+            return result;
+        }
+
+        public async Task<bool> DeleteCollab(CollabUpdateModel request)
+        {
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == request.UserId);
+            var shopUser = await _dataDbContext.TShopUsers.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.ShopId == request.ShopId);
+            if (user != null && shopUser!=null)
+            {
+                user.IsDelete = 1;
+                shopUser.IsDelete = 1;
+                user.ModifiedUtcDate = DateTime.UtcNow;
+                shopUser.RetiredUtcDate = DateTime.UtcNow;
+            }
+            _dataDbContext.TUsers.Update(user);
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        
     }
 }
 

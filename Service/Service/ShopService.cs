@@ -1,5 +1,6 @@
 ﻿using Repository.Interface;
 using Repository.Model;
+using Repository.Model.ShopModel;
 using Repository.Repository;
 using Service.Interface;
 using System;
@@ -18,7 +19,7 @@ namespace Service.Service
             _shopRepo = shopRepo;
         }
 
-        public Task<bool> CreateCollab(long shopId, UserRegisterModel request)
+        public Task<bool> CreateCollab(long shopId, CollabCreateModel request)
         {
             return _shopRepo.CreateCollab(request.ShopId, request);
         }
@@ -38,9 +39,9 @@ namespace Service.Service
             return await _shopRepo.GetShopDetails(shopId);
         }
 
-        public async Task<UserRegisterModel> GetCollab(long shopId)
+        public async Task<CollabCreateModel> GetCollabCreateModel(long shopId)
         {
-            return await _shopRepo.GetCollab(shopId);
+            return await _shopRepo.GetCollabCreateModel(shopId);
         }
 
         public async Task<PagedResult<CollabViewModel>> GetCollabByShopId(long shopId)
@@ -68,6 +69,21 @@ namespace Service.Service
         public async Task<bool> UpdateShop( ShopCreateModel request)
         {
             return await _shopRepo.UpdateShop(request);
+        }
+
+        public async Task<bool> UpdateCollab(CollabUpdateModel request)
+        {
+            return await _shopRepo.UpdateCollab(request);
+        }
+
+        public async Task<CollabUpdateModel> GetCollabUpdate(long userId, long shopId)
+        {
+            return await _shopRepo.GetCollabUpdate(userId, shopId);
+        }
+
+        public async Task<bool> DeleteCollab(CollabUpdateModel request)
+        {
+            return await _shopRepo.DeleteCollab(request);
         }
     }
 }

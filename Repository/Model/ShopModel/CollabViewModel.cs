@@ -10,6 +10,7 @@ namespace Repository.Model
     public class CollabViewModel
     {
         public long ShopId { get; set; }
+        public sbyte UserStatusId { get; set; }
         public long UserId { get; set; }
 
         [Display(Name = "Name")]
