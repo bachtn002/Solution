@@ -24,7 +24,7 @@ namespace Repository.Model
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
         [Display(Name= "Choose a photo for your avatar")]
-        [Required(ErrorMessage = "Photo is required")]
+        /*[Required(ErrorMessage = "Choose a photo")]*/
         public string Avatar { get; set; }
         [Display(Name="Shop Status")]
         public sbyte ShopStatusId { get; set; }

@@ -46,9 +46,11 @@ namespace WebApplication1
             services.AddTransient<QL_CTVContext, QL_CTVContext>();
             services.AddTransient<IShopRepo, ShopRepo>();
             services.AddTransient<IUserRepo, UserRepo>();
+            services.AddTransient<IProductRepo, ProductRepo>();
             
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IShopService, ShopService>();
+            services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

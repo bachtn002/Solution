@@ -8,7 +8,7 @@ namespace Data.Models
     public partial class TCategory
     {
         public long CategoryId { get; set; }
-        public ulong ShopId { get; set; }
+        public long ShopId { get; set; }
         public string NameCategory { get; set; }
         public int? ParentId { get; set; }
         public ulong IsDelete { get; set; }

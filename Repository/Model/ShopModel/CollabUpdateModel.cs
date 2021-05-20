@@ -15,17 +15,17 @@ namespace Repository.Model.ShopModel
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Fullname is required")]
         public string FullName { get; set; }
-        
-        /*[Display(Name ="Mobile")]
+
+        [Display(Name = "Mobile")]
         [RegularExpression(@"(^\d+$)", ErrorMessage = "Mobile contains only number 0-9")]
         [Phone(ErrorMessage = "Mobile contains only number 0-9")]
-        public string Mobile { get; set; }*/
+        public string Mobile { get; set; }
 
         [Display(Name ="Status")]
         public sbyte UserStatusId { get; set; }
 
-        /*[Display(Name = "Gender")]
-        public sbyte GenderId { get; set; }*/
+        [Display(Name = "Gender")]
+        public sbyte GenderId { get; set; }
 
         [Display(Name ="Role")]
         public int RoleId { get; set; }

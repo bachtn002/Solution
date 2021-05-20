@@ -31,7 +31,7 @@ namespace Repository.Repository
         public async Task<bool> RegisterUser(UserRegisterModel request)
         {
             
-            if (await _dataDbContext.TUsers.AnyAsync(x => x.Mobile == request.Mobile))
+            if (await _dataDbContext.TUsers.AnyAsync(x => x.Mobile == request.Mobile && x.IsDelete==0))
             {
                 return false;
             }

@@ -4,9 +4,8 @@
     ViewData["Title"] = "EditCollab";
 }
 
-<h1>EditCollab</h1>
+<h3>EditCollab</h3>
 
-<h4>CollabUpdateModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,6 +22,11 @@
                 <span asp-validation-for="ShopId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Mobile" class="control-label"></label>
+                <input asp-for="Mobile" class="form-control" />
+                <span asp-validation-for="Mobile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="FullName" class="control-label"></label>
                 <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
@@ -32,6 +36,15 @@
                 <select class="custom-select" asp-for="UserStatusId">
                     <option value="1">Actived</option>
                     <option value="2">Deactived</option>
+                </select>
+                <span asp-validation-for="UserStatusId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GenderId" class="control-label"></label>
+                <select class="custom-select" asp-for="GenderId">
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
                 </select>
                 <span asp-validation-for="UserStatusId" class="text-danger"></span>
             </div>

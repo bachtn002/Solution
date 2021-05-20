@@ -84,6 +84,6 @@
     <a class="btn btn-success" asp-action="Index">Back</a>
     <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Shop", new { shopId = Model.ShopId})'">Edit</button>
     <button class="btn btn-info" onclick="location.href='@Url.Action("ShowCollab", "Shop", new { shopId = Model.ShopId})'">Colaborators</button>
-    <button class="btn btn-info" onclick="location.href='@Url.Action("ShowCollab", "Shop", new { shopId = Model.ShopId})'">Products</button>
+    <button class="btn btn-info" onclick="location.href='@Url.Action("Index", "Product", new { shopId = Model.ShopId})'">Products</button>
 
 </div>

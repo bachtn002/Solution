@@ -32,7 +32,7 @@ namespace WebApplication.Controllers
         public async Task<IActionResult> Delete(long shopId)
         {
             var result = await _shopService.GetUpdateShop(shopId);
-            
+
             return View(result);
         }
         [HttpPost]
@@ -44,7 +44,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "Delete Failed");
                 return View();
             }
-            return RedirectToAction("Index","Shop");
+            return RedirectToAction("Index", "Shop");
         }
 
         [HttpGet]
@@ -66,18 +66,18 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult>EditCollab(long userId, long shopId)
+        public async Task<IActionResult> EditCollab(long userId, long shopId)
         {
             var result = await _shopService.GetCollabUpdate(userId, shopId);
             return View(result);
         }
         [HttpPost]
-        public async Task<IActionResult>EditCollab(CollabUpdateModel request)
+        public async Task<IActionResult> EditCollab(CollabUpdateModel request)
         {
             var result = await _shopService.UpdateCollab(request);
             if (result == false)
             {
-                ModelState.AddModelError(string.Empty, "Update Failed");
+                ModelState.AddModelError(string.Empty, "That mobile is taken. Try another");
                 return View();
             }
             return RedirectToAction("ShowCollab", "Shop", new { shopId = request.ShopId });
@@ -95,10 +95,10 @@ namespace WebApplication.Controllers
             var result = await _shopService.UpdateShop(request);
             if (result == false)
             {
-                ModelState.AddModelError(string.Empty, "Update Failed");
-                return View();
+                ModelState.AddModelError(string.Empty, "That name shop is taken. Try another");
+                return View(request);
             }
-            return RedirectToAction("Index","Shop");
+            return RedirectToAction("Index", "Shop");
         }
 
         [HttpGet]
@@ -112,11 +112,11 @@ namespace WebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateCollab(long shopId)
         {
-            
+
             var result = await _shopService.GetCollabCreateModel(shopId);
             var user = new CollabCreateModel()
             {
-                ShopId=result.ShopId
+                ShopId = result.ShopId
             };
             return View(user);
         }
@@ -133,7 +133,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "Mobile is already");
                 return View();
             }
-            return RedirectToAction("ShowCollab", "Shop", new {shopId= request.ShopId });
+            return RedirectToAction("ShowCollab", "Shop", new { shopId = request.ShopId });
         }
 
         [HttpGet]
@@ -150,10 +150,13 @@ namespace WebApplication.Controllers
             }
             var result = await _shopService.CreateShop(request);
             var resultInsert = await _shopService.InsertShopUser();
+            if (result == false && resultInsert==false)
+            {
+                ModelState.AddModelError(string.Empty, "That name shop is taken. Try another");
+                return View(request);
+            }
+            return RedirectToAction("Index");
 
-            if (result == true && resultInsert == true)
-                return RedirectToAction("Index");
-            return View();
         }
 
         [HttpGet]

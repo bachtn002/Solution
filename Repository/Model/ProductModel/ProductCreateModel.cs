@@ -9,8 +9,9 @@ namespace Repository.Model.ProductModel
 {
     public class ProductCreateModel
     {
-        public long ProductId { get; set; }
+        public long CategoryId { get; set; }
         public long ShopId { get; set; }
+
         [Display(Name="Name")]
         [Required(ErrorMessage ="Name is required")]
         public string Name { get; set; }
@@ -31,6 +32,6 @@ namespace Repository.Model.ProductModel
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
         public sbyte ProductStatusId { get; set; }
-        public DateTime CreatedUtcDate { get; set; }
+        
     }
 }
