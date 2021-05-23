@@ -8,7 +8,7 @@
 <h3>Product portfolio</h3>
 
 <div class="d-flex justify-content-end mb-2">
-    <button class="btn btn-success mr-1" onclick="history.back()">Back</button>
+    <button class="btn btn-success mr-1" onclick="location.href = '@Url.Action("Details","Shop",new {shopId=shopId })'">Back</button>
     <button class="btn btn-primary" onclick="location.href = '@Url.Action("CreateCategory","Product",new {shopId=shopId })'">Create New</button>
 </div>
 <table class="table">

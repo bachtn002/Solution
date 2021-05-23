@@ -29,11 +29,13 @@ where s.ShopId=su.ShopId and su.RoleId=2 and s.ShopId=22;
 
 
 
-SELECT s.*,tmss.ShopStatusName, r.RoleName
-FROM T_Shop as s,
-TM_ShopStatus as tmss, T_ShopUser as su, T_Role as r
-WHERE s.UserId=56 AND s.IsDelete=0 AND s.ShopStatusId=tmss.ShopStatusId 
-AND s.UserId=su.UserId AND su.RoleId=r.RoleId
+SELECT * FROM T_User as u 
+join T_ShopUser as su on u.UserId=su.UserId
+join T_Shop as s on su.ShopId=s.ShopId
+join T_Role as r on su.RoleId= r.RoleId
+join TM_ShopStatus as tm on s.ShopStatusId=tm.ShopStatusId
+where u.UserId=56 AND s.IsDelete=0 
+
 
 
 

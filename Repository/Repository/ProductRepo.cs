@@ -21,8 +21,7 @@ namespace Repository.Repository
 
         public async Task<bool> CreateCategory(CategoryCreateModel request)
         {
-            var category = await _dataDbContext.TCategories.FirstOrDefaultAsync(x => x.NameCategory == request.NameCategory && x.IsDelete==0);
-            if (category != null)
+            if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory && x.IsDelete == 0))
             {
                 return false;
             }
@@ -45,25 +44,30 @@ namespace Repository.Repository
 
         public async Task<bool> CreateProduct(ProductCreateModel request)
         {
+            if (await _dataDbContext.TProducts.AnyAsync(x => x.Name == request.Name && x.IsDelete == 0))
+            {
+                return false;
+            }
             await _dataDbContext.TProducts.AddAsync(new TProduct()
             {
-                ShopId=request.ShopId,
-                Name=request.Name,
-                Price=request.Price,
-                Images=request.Images,
-                Properties=request.Properties,
-                Description=request.Description,
-                ProductStatusId=1,
-                CreatedUtcDate=DateTime.UtcNow
+                ShopId = request.ShopId,
+                Name = request.Name,
+                Price = request.Price,
+                Images = request.Images,
+                Properties = request.Properties,
+                Description = request.Description,
+                ProductStatusId = 1,
+                CreatedUtcDate = DateTime.UtcNow
             });
+            var result = await _dataDbContext.SaveChangesAsync();
             await _dataDbContext.TProductCategories.AddAsync(new TProductCategory()
             {
                 CategoryId = request.CategoryId,
-                ProductId = await _dataDbContext.TProducts.Select(x => x.ProductId).MaxAsync() + 1,
-                CreatedUtcDate=DateTime.UtcNow
-            }) ;
-            var result = await _dataDbContext.SaveChangesAsync();
-            if (result <= 0)
+                ProductId = await _dataDbContext.TProducts.Select(x => x.ProductId).MaxAsync(),
+                CreatedUtcDate = DateTime.UtcNow
+            });
+            var result1 = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0 && result1 <= 0)
             {
                 return false;
             }
@@ -82,9 +86,9 @@ namespace Repository.Repository
                         select new { c };
             var data = await query.Select(x => new CategoryViewModel()
             {
-                CategoryId=x.c.CategoryId,
-                ShopId=x.c.ShopId,
-                NameCategory=x.c.NameCategory
+                CategoryId = x.c.CategoryId,
+                ShopId = x.c.ShopId,
+                NameCategory = x.c.NameCategory
             }).ToListAsync();
             return data;
         }
@@ -97,17 +101,17 @@ namespace Repository.Repository
                         join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
                         join tm in _dataDbContext.TmProductStatuses on p.ProductStatusId equals tm.ProductStatusId
                         where s.ShopId == shopId && c.CategoryId == categoryId && pc.IsDelete == 0
-                        select new {s,p,pc,c,tm };
+                        select new { s, p, pc, c, tm };
             var data = await query.Select(x => new ProductViewModel()
             {
-                ProductId=x.p.ProductId,
-                Name=x.p.Name,
-                NameCategory=x.c.NameCategory,
-                Price=x.p.Price,
-                Images=x.p.Images,
-                ProductStatusName=x.tm.ProductStatusName,
-                Properties=x.p.Properties,
-                Description=x.p.Description
+                ProductId = x.p.ProductId,
+                Name = x.p.Name,
+                NameCategory = x.c.NameCategory,
+                Price = x.p.Price,
+                Images = x.p.Images,
+                ProductStatusName = x.tm.ProductStatusName,
+                Properties = x.p.Properties,
+                Description = x.p.Description
             }).ToListAsync();
             return data;
         }
@@ -117,11 +121,11 @@ namespace Repository.Repository
             var query = from p in _dataDbContext.TProducts
                         join pc in _dataDbContext.TProductCategories on p.ProductId equals pc.ProductId
                         join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
-                        where p.ShopId == shopId && c.ShopId==shopId
-                        select new { p,c };
+                        where p.ShopId == shopId && c.ShopId == shopId
+                        select new { p, c };
             var data = await query.Select(x => new ProductViewModel()
             {
-                
+
             }).ToListAsync();
             return data;
         }
@@ -131,14 +135,38 @@ namespace Repository.Repository
             throw new NotImplementedException();
         }
 
-        public Task<ProductUpdateModel> GetUpdateProduct(long productId)
+        public async Task<ProductUpdateModel> GetUpdateProduct(long productId)
         {
-            throw new NotImplementedException();
+            var product = await _dataDbContext.TProducts.FirstOrDefaultAsync(x => x.ProductId == productId);
+            var result = new ProductUpdateModel()
+            {
+                Name = product.Name,
+                Price=product.Price,
+                ProductStatusId=product.ProductStatusId,
+                Description=product.Description
+            };
+            return result;
         }
 
-        public Task<bool> UpdateProduct(ProductUpdateModel request)
+        public async Task<bool> UpdateProduct(ProductUpdateModel request)
         {
-            throw new NotImplementedException();
+            if(await _dataDbContext.TProducts.AnyAsync(x=>x.Name==request.Name && x.ProductId!=request.ProductId && x.IsDelete == 0))
+            {
+                return false;
+            }
+            var product = await _dataDbContext.TProducts.FirstOrDefaultAsync(x => x.ProductId == request.ProductId);
+            product.Name = request.Name;
+            product.Price = request.Price;
+            product.ProductStatusId = request.ProductStatusId;
+            product.Description = request.Description;
+            product.ModifiedUtcDate = DateTime.UtcNow;
+            _dataDbContext.TProducts.Update(product);
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

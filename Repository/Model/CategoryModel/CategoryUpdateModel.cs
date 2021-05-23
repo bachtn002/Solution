@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace Repository.Model.CategoryModel
 {
-    public class CategoryViewModel
+    public class CategoryUpdateModel
     {
         public long CategoryId { get; set; }
         public long ShopId { get; set; }
         [Display(Name ="Name")]
+        [Required(ErrorMessage ="Name is required")]
         public string NameCategory { get; set; }
-
+        public int ParentId { get; set; }
+        
     }
 }

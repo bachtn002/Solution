@@ -4,12 +4,12 @@
     ViewData["Title"] = "DeleteCollab";
 }
 
-<h3>DeleteCollab</h3>
+<h3>Delete</h3>
 
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-1">
         <form asp-action="DeleteCollab">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div hidden class="form-group">
@@ -43,16 +43,16 @@
                 <span asp-validation-for="ModifiedUtcDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <button class="btn btn-success" onclick="history.back()">Back</button>
                 <input type="submit" value="Delete" class="btn btn-danger" />
             </div>
         </form>
+
+    </div>
+    <div class="d-inline-block">
+        <button class="btn btn-success" onclick="location.href = '@Url.Action("ShowCollab","Shop",new {shopId=Model.ShopId })'">Back</button>
     </div>
 </div>
 
-<div>
-    
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

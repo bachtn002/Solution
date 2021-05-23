@@ -37,5 +37,15 @@ namespace Service.Service
         {
             return await _productRepo.GetProduct(shopId, categoryId);
         }
+
+        public async Task<ProductUpdateModel> GetUpdateProduct(long productId)
+        {
+            return await _productRepo.GetUpdateProduct(productId);
+        }
+
+        public async Task<bool> UpdateProduct(ProductUpdateModel request)
+        {
+            return await _productRepo.UpdateProduct(request);
+        }
     }
 }

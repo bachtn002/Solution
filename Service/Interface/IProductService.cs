@@ -14,5 +14,7 @@ namespace Service.Interface
         public Task<bool> CreateCategory(CategoryCreateModel request);
         public Task<List<CategoryViewModel>> GetCategoryByShopId(long shopId);
         public Task<List<ProductViewModel>> GetProduct(long shopId, long categoryId);
+        public Task<ProductUpdateModel> GetUpdateProduct(long productId);
+        public Task<bool> UpdateProduct(ProductUpdateModel request);
     }
 }

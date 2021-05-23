@@ -39,15 +39,16 @@ namespace WebApplication.Controllers
             var result = await _productService.CreateProduct(request);
             if (result == false)
             {
-                ModelState.AddModelError(string.Empty, "Created Failed");
+                ModelState.AddModelError(string.Empty, "That name product is taken. Try another");
                 return View();
             }
-            return RedirectToAction("Index", "Shop");
+            return RedirectToAction("GetProduct", "Product", new {shopId=request.ShopId, categoryId=request.CategoryId });
         }
 
         [HttpGet] 
         public IActionResult CreateCategory(long shopId)
         {
+            ViewBag.ShopId = shopId;
             return View();
         }
         [HttpPost]
@@ -56,10 +57,10 @@ namespace WebApplication.Controllers
             var result = await _productService.CreateCategory(request);
             if (result == false)
             {
-                ModelState.AddModelError(string.Empty, "Created Failed");
+                ModelState.AddModelError(string.Empty, "That name category is taken. Try another");
                 return View(request);
             }
-            return RedirectToAction("Index", "Shop");
+            return RedirectToAction("Index", "Product", new {shopId=request.ShopId });
         }
 
         [HttpGet]
@@ -71,6 +72,67 @@ namespace WebApplication.Controllers
             return View(result);
         }
 
-        
+        [HttpGet]
+        public IActionResult DeleteCategory(long shopId)
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DeleteCategory(CategoryUpdateModel request)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult UpdateCategory(long shopId)
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult UpdateCategory(CategoryUpdateModel request)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult DeleteProduct(long shopId, long categoryId)
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DeleteProduct(ProductUpdateModel request)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateProduct(long productId)
+        {
+            var result = await _productService.GetUpdateProduct(productId);
+            return View(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(ProductUpdateModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError(string.Empty, "Update Failed");
+                return View(request);
+            }
+            var result = await _productService.UpdateProduct(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "That name product is taken. Try another");
+                return View(request);
+            }
+            return RedirectToAction("","",new { });
+        }
+            
+        [HttpGet]
+        public IActionResult DetailProduct(long productId)
+        {
+            return View();
+        }
+
     }
 }
