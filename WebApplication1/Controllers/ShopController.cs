@@ -149,13 +149,18 @@ namespace WebApplication.Controllers
                 return View(request);
             }
             var result = await _shopService.CreateShop(request);
-            var resultInsert = await _shopService.InsertShopUser();
-            if (result == false && resultInsert==false)
+            if (result == false)
             {
+
                 ModelState.AddModelError(string.Empty, "That name shop is taken. Try another");
                 return View(request);
             }
-            return RedirectToAction("Index");
+            else
+            {
+                var resultInsert = await _shopService.InsertShopUser();
+                return RedirectToAction("Index");
+            }
+            
 
         }
 

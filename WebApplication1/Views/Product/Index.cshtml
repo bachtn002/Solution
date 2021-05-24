@@ -20,6 +20,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.NameCategory)
             </th>
+
             <th></th>
         </tr>
     </thead>
@@ -34,12 +35,12 @@
             </td>
             <td>
                 <button class="btn btn-warning"
-                        onclick="location.href = '@Url.Action("EditCategory","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
+                        onclick="location.href = '@Url.Action("UpdateCategory","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
                     Edit
                 </button>
                 <button class="btn btn-info"
                         onclick="location.href = '@Url.Action("GetProduct","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
-                    Product
+                    Products
                 </button>
                 <button class="btn btn-danger"
                         onclick="location.href = '@Url.Action("DeleteCategory","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">

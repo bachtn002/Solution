@@ -28,6 +28,11 @@ namespace Service.Service
             return await _productRepo.CreateProduct(request);
         }
 
+        public async Task<bool> DeleteCategory(CategoryUpdateModel request)
+        {
+            return await _productRepo.DeleteCategory(request);
+        }
+
         public async Task<List<CategoryViewModel>> GetCategoryByShopId(long shopId)
         {
             return await _productRepo.GetCategoryByShopId(shopId);
@@ -38,9 +43,20 @@ namespace Service.Service
             return await _productRepo.GetProduct(shopId, categoryId);
         }
 
+        public async Task<CategoryUpdateModel> GetUpdateCategory(long categoryId)
+        {
+            return await _productRepo.GetUpdateCategory(categoryId);
+        }
+
         public async Task<ProductUpdateModel> GetUpdateProduct(long productId)
         {
             return await _productRepo.GetUpdateProduct(productId);
+        }
+
+        public async Task<bool> UpdateCategory(CategoryUpdateModel request)
+        {
+            return await _productRepo.UpdateCategory(request);
+
         }
 
         public async Task<bool> UpdateProduct(ProductUpdateModel request)

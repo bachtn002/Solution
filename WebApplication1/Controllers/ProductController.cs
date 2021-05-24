@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Repository.Model.CategoryModel;
 using Repository.Model.ProductModel;
 using Service.Interface;
@@ -11,11 +13,16 @@ namespace WebApplication.Controllers
 {
     public class ProductController : Controller
     {
+        
         private readonly IProductService _productService;
+        
         public ProductController(IProductService productService)
         {
             _productService = productService;
+            
         }
+
+        
         public async Task<IActionResult> Index(long shopId)
         {
             ViewBag.ShopId = shopId;
@@ -42,10 +49,10 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "That name product is taken. Try another");
                 return View();
             }
-            return RedirectToAction("GetProduct", "Product", new {shopId=request.ShopId, categoryId=request.CategoryId });
+            return RedirectToAction("GetProduct", "Product", new { shopId = request.ShopId, categoryId = request.CategoryId });
         }
 
-        [HttpGet] 
+        [HttpGet]
         public IActionResult CreateCategory(long shopId)
         {
             ViewBag.ShopId = shopId;
@@ -60,7 +67,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "That name category is taken. Try another");
                 return View(request);
             }
-            return RedirectToAction("Index", "Product", new {shopId=request.ShopId });
+            return RedirectToAction("Index", "Product", new { shopId = request.ShopId });
         }
 
         [HttpGet]
@@ -73,25 +80,44 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult DeleteCategory(long shopId)
+        public async Task<IActionResult> DeleteCategory(long categoryId)
         {
-            return View();
+            var result = await _productService.GetUpdateCategory(categoryId);
+            return View(result);
         }
         [HttpPost]
-        public IActionResult DeleteCategory(CategoryUpdateModel request)
+        public async Task<IActionResult> DeleteCategory(CategoryUpdateModel request)
         {
-            return View();
+            var result = await _productService.DeleteCategory(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "Delete Failed");
+                return View(request);
+            }
+            return RedirectToAction("Index", "Product", new {shopId=request.ShopId });
         }
 
         [HttpGet]
-        public IActionResult UpdateCategory(long shopId)
+        public async Task<IActionResult> UpdateCategory(long categoryId)
         {
-            return View();
+            var result = await _productService.GetUpdateCategory(categoryId);
+            ViewBag.ListTest = result.CategoryParentList.Select(x => new SelectListItem()
+            {
+                Value=x.ParentId.ToString(),
+                Text=x.NameCategory
+            });
+            return View(result);
         }
         [HttpPost]
-        public IActionResult UpdateCategory(CategoryUpdateModel request)
+        public async Task<IActionResult> UpdateCategory(CategoryUpdateModel request)
         {
-            return View();
+            var result = await _productService.UpdateCategory(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "That name category is taken");
+                return View(request);
+            }
+            return RedirectToAction("Index","Product",new {shopId=request.ShopId, categoryId=request.CategoryId });
         }
 
         [HttpGet]
@@ -125,9 +151,9 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "That name product is taken. Try another");
                 return View(request);
             }
-            return RedirectToAction("","",new { });
+            return RedirectToAction("", "", new { });
         }
-            
+
         [HttpGet]
         public IActionResult DetailProduct(long productId)
         {

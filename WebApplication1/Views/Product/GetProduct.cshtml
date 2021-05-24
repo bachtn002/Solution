@@ -24,15 +24,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Images)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Properties)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.ProductStatusName)
             </th>
@@ -51,26 +43,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Images)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Properties)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
+            
             <td>
                 @Html.DisplayFor(modelItem => item.ProductStatusName)
             </td>
             <td>
                 <button class="btn btn-warning"
-                        onclick="location.href = '@Url.Action("EditProduct", "Product", new { productId = item.ProductId })'">
+                        onclick="location.href = '@Url.Action("UpdateProduct", "Product", new { productId = item.ProductId })'">
                     Edit
                 </button>
                 <button class="btn btn-info"
                         onclick="location.href = '@Url.Action("DetailProduct", "Product", new {productId=item.ProductId })'">
-                    Detail
+                    Details
                 </button>
                 <button class="btn btn-danger"
                         onclick="location.href = '@Url.Action("DeleteProduct","Product",new {productId=item.ProductId })'">

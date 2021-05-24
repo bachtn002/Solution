@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using Repository.Model.CategoryModel;
@@ -19,9 +20,11 @@ namespace Repository.Repository
             _dataDbContext = dataDbContext;
         }
 
+
+
         public async Task<bool> CreateCategory(CategoryCreateModel request)
         {
-            if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory && x.IsDelete == 0))
+            if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory && x.ShopId == request.ShopId))
             {
                 return false;
             }
@@ -44,7 +47,8 @@ namespace Repository.Repository
 
         public async Task<bool> CreateProduct(ProductCreateModel request)
         {
-            if (await _dataDbContext.TProducts.AnyAsync(x => x.Name == request.Name && x.IsDelete == 0))
+            if (await _dataDbContext.TProducts.AnyAsync(x => x.Name == request.Name && x.IsDelete == 0
+            && x.ShopId == request.ShopId))
             {
                 return false;
             }
@@ -74,6 +78,23 @@ namespace Repository.Repository
             return true;
         }
 
+        public async Task<bool> DeleteCategory(CategoryUpdateModel request)
+        {
+            var category = await _dataDbContext.TCategories.FirstOrDefaultAsync(x => x.CategoryId == request.CategoryId);
+            if (category != null)
+            {
+                category.IsDelete = 1;
+                category.ModifiedUtcDate = DateTime.UtcNow;
+                _dataDbContext.TCategories.Update(category);
+            }
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public Task<bool> DeleteProduct(long productId)
         {
             throw new NotImplementedException();
@@ -82,7 +103,7 @@ namespace Repository.Repository
         public async Task<List<CategoryViewModel>> GetCategoryByShopId(long shopId)
         {
             var query = from c in _dataDbContext.TCategories
-                        where c.ShopId == shopId
+                        where c.ShopId == shopId && c.IsDelete == 0
                         select new { c };
             var data = await query.Select(x => new CategoryViewModel()
             {
@@ -135,22 +156,79 @@ namespace Repository.Repository
             throw new NotImplementedException();
         }
 
+        public async Task<CategoryUpdateModel> GetUpdateCategory(long categoryId)
+        {
+            var category = await _dataDbContext.TCategories.FirstOrDefaultAsync(x => x.CategoryId == categoryId);
+
+            var categoryVM = new CategoryUpdateModel()
+            {
+                CategoryId = category.CategoryId,
+                ShopId = category.ShopId,
+                NameCategory = category.NameCategory,
+                ParentId=(int)category.ParentId
+            };
+            var query = from c in _dataDbContext.TCategories
+                        where c.ShopId == category.ShopId
+                        select new { c };
+            var result = await query.Select(x => new CategoryParent()
+            {
+                NameCategory = x.c.NameCategory,
+                ParentId = (int)x.c.CategoryId
+            }).ToListAsync();
+            /*var items = _dataDbContext.TCategories.Where(x => x.CategoryId == category.CategoryId)
+                .Select(x => new SelectListItem
+                {
+                    Value=x.CategoryId.ToString(),
+                    Text=x.NameCategory
+                }).ToList();*/
+            /*categoryVM.CategoryParentList = items;*/
+            categoryVM.CategoryParentList = result;
+            return categoryVM;
+        }
+
         public async Task<ProductUpdateModel> GetUpdateProduct(long productId)
         {
             var product = await _dataDbContext.TProducts.FirstOrDefaultAsync(x => x.ProductId == productId);
             var result = new ProductUpdateModel()
             {
                 Name = product.Name,
-                Price=product.Price,
-                ProductStatusId=product.ProductStatusId,
-                Description=product.Description
+                Price = product.Price,
+                ProductStatusId = product.ProductStatusId,
+                Description = product.Description,
+                Images=product.Images,
+                Properties=product.Properties,
+
             };
             return result;
         }
 
+        public async Task<bool> UpdateCategory(CategoryUpdateModel request)
+        {
+            if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory
+             && x.CategoryId != request.CategoryId))
+            {
+                return false;
+            }
+            var category = await _dataDbContext.TCategories.FirstOrDefaultAsync(x => x.CategoryId == request.CategoryId);
+            if (category != null)
+            {
+                /*category.CategoryId = request.CategoryId;*/
+                category.NameCategory = request.NameCategory;
+                category.ParentId = request.ParentId;
+                category.ModifiedUtcDate = DateTime.UtcNow;
+            }
+            _dataDbContext.TCategories.Update(category);
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<bool> UpdateProduct(ProductUpdateModel request)
         {
-            if(await _dataDbContext.TProducts.AnyAsync(x=>x.Name==request.Name && x.ProductId!=request.ProductId && x.IsDelete == 0))
+            if (await _dataDbContext.TProducts.AnyAsync(x => x.Name == request.Name && x.ProductId != request.ProductId && x.IsDelete == 0))
             {
                 return false;
             }
@@ -158,6 +236,8 @@ namespace Repository.Repository
             product.Name = request.Name;
             product.Price = request.Price;
             product.ProductStatusId = request.ProductStatusId;
+            product.Images = request.Images;
+            product.Properties = request.Properties;
             product.Description = request.Description;
             product.ModifiedUtcDate = DateTime.UtcNow;
             _dataDbContext.TProducts.Update(product);

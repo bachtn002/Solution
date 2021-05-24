@@ -18,5 +18,9 @@ namespace Repository.Interface
         public Task<ProductDetailModel> GetProductDetails(long productId);
         public Task<List<CategoryViewModel>> GetCategoryByShopId(long shopId);
         public Task<bool> CreateCategory(CategoryCreateModel request);
+        public Task<CategoryUpdateModel> GetUpdateCategory(long shopId);
+        public Task<bool> DeleteCategory(CategoryUpdateModel request);
+        public Task<bool> UpdateCategory(CategoryUpdateModel request);
+        
     }
 }

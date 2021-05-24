@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Repository.Model.CategoryModel
         [Required(ErrorMessage ="Name is required")]
         public string NameCategory { get; set; }
         public int ParentId { get; set; }
+        [Display(Name ="Category Parent")]
+        public List<CategoryParent> CategoryParentList { get; set; }
         
     }
 }

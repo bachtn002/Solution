@@ -82,9 +82,9 @@ namespace Repository.Repository
             {
                 var claims = new List<Claim>
                 {
-                new Claim(ClaimTypes.Name,user.FullName),
+                new Claim(ClaimTypes.Name,user.Mobile),
                 new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
-                new Claim(ClaimTypes.GivenName, user.Mobile)
+                new Claim(ClaimTypes.GivenName, user.FullName)
                 };
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
                 var token = new JwtSecurityToken
