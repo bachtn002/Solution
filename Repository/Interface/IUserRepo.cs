@@ -11,7 +11,7 @@ namespace Repository.Interface
     public interface IUserRepo
     {
         public Task<string> LoginUser(UserLoginModel request);
-        public Task<List<UserViewModel>> GetAllUser();
+        public Task<UserViewModel> GetUserDetails(long userId);
         public Task<bool> RegisterUser(UserRegisterModel request);
         public long GetUserId();
         

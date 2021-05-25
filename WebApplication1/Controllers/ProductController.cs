@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Repository.Model.CategoryModel;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         
@@ -121,20 +123,28 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult DeleteProduct(long shopId, long categoryId)
+        public async Task<IActionResult> DeleteProduct(long productId, long categoryId, long shopId)
         {
-            return View();
+            var result = await _productService.GetUpdateProduct(productId, categoryId,shopId);
+            
+            return View(result);
         }
         [HttpPost]
-        public IActionResult DeleteProduct(ProductUpdateModel request)
+        public async Task<IActionResult> DeleteProduct(ProductUpdateModel request)
         {
-            return View();
+            var result = await _productService.DeleteProduct(request);
+            if (result == false)
+            {
+                ModelState.AddModelError(string.Empty, "Delete Failed");
+                return View(request);
+            }
+            return RedirectToAction("GetProduct", "Product", new {shopId=request.ShopId, categoryId=request.CategoryId});
         }
 
         [HttpGet]
-        public async Task<IActionResult> UpdateProduct(long productId)
+        public async Task<IActionResult> UpdateProduct(long productId, long categoryId, long shopId)
         {
-            var result = await _productService.GetUpdateProduct(productId);
+            var result = await _productService.GetUpdateProduct(productId, categoryId, shopId);
             return View(result);
         }
         [HttpPost]
@@ -155,9 +165,10 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult DetailProduct(long productId)
+        public async Task<IActionResult> DetailProduct(long productId)
         {
-            return View();
+            var result = await _productService.GetProductDetails(productId);
+            return View(result);
         }
 
     }

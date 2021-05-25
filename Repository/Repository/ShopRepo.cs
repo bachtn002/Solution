@@ -297,7 +297,8 @@ namespace Repository.Repository
         public async Task<bool> DeleteCollab(CollabUpdateModel request)
         {
             var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == request.UserId);
-            var shopUser = await _dataDbContext.TShopUsers.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.ShopId == request.ShopId);
+            var shopUser = await _dataDbContext.TShopUsers.FirstOrDefaultAsync(x => x.UserId == request.UserId 
+            && x.ShopId == request.ShopId);
             if (user != null && shopUser != null)
             {
                 user.IsDelete = 1;
@@ -314,8 +315,27 @@ namespace Repository.Repository
             return true;
         }
 
-
-
+        public async Task<CollabViewModel> GetCollabDetails(long userId)
+        {
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == userId);
+            var result = new CollabViewModel()
+            {
+                Mobile=user.Mobile,
+                FullName=user.FullName,
+                Avatar=user.Avatar,
+                DOB=user.DateOfBirth,
+                JoinDate=user.CreatedUtcDate,
+                GenderName=(from u in _dataDbContext.TUsers
+                            join tm in _dataDbContext.TmGenders on u.GenderId equals tm.GenderId
+                            where tm.GenderId==user.GenderId
+                            select tm.GenderName).FirstOrDefault(),
+                UserStatusName=(from u in _dataDbContext.TUsers
+                                join tm in _dataDbContext.TmUserStatuses on u.UserStatusId equals tm.UserStatusId
+                                where tm.UserStatusId==user.UserStatusId
+                                select tm.UserStatusName).FirstOrDefault()
+            };
+            return result;
+        }
     }
 }
 

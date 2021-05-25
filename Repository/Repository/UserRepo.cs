@@ -56,23 +56,7 @@ namespace Repository.Repository
             return true;
         }
 
-        public async Task<List<UserViewModel>> GetAllUser()
-        {
-            var query = from p in _dataDbContext.TUsers
-                        join g in _dataDbContext.TmGenders on p.GenderId equals g.GenderId
-                        join r in _dataDbContext.TRoles on p.RoleId equals r.RoleId
-                        select new { p, g, r };
-            var data = await query.Select(x => new UserViewModel()
-            {
-                UserId = x.p.UserId,
-                Mobile = x.p.Mobile,
-                FullName = x.p.FullName,
-                DateOfBirth = x.p.DateOfBirth,
-                GenderName = x.g.GenderName,
-                RoleName = x.r.RoleName
-            }).ToListAsync();
-            return data;
-        }
+        
 
         public async Task<string> LoginUser(UserLoginModel request)
         {
@@ -109,5 +93,26 @@ namespace Repository.Repository
             return userId;
         }
 
-}
+        public async Task<UserViewModel> GetUserDetails(long userId)
+        {
+            var user = await _dataDbContext.TUsers.FirstOrDefaultAsync(x => x.UserId == userId);
+            var result = new UserViewModel()
+            {
+                Mobile = user.Mobile,
+                FullName = user.FullName,
+                Avatar = user.Avatar,
+                DOB = user.DateOfBirth,
+                JoinDate = user.CreatedUtcDate,
+                GenderName = (from u in _dataDbContext.TUsers
+                              join tm in _dataDbContext.TmGenders on u.GenderId equals tm.GenderId
+                              where tm.GenderId == user.GenderId
+                              select tm.GenderName).FirstOrDefault(),
+                UserStatusName = (from u in _dataDbContext.TUsers
+                                  join tm in _dataDbContext.TmUserStatuses on u.UserStatusId equals tm.UserStatusId
+                                  where tm.UserStatusId == user.UserStatusId
+                                  select tm.UserStatusName).FirstOrDefault()
+            };
+            return result;
+        }
+    }
 }

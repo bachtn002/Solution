@@ -8,7 +8,7 @@
 
 <h3>Manage Collaborator</h3>
 
-<div class="d-flex justify-content-end mb-3" >
+<div class="d-flex justify-content-end mb-3">
     <button class="btn btn-success mr-1" onclick="location.href='@Url.Action("Details", "Shop", new { shopId = shopId})'">Back</button>
     <button class="btn btn-primary" onclick="location.href='@Url.Action("CreateCollab", "Shop", new { shopId = shopId})'">Create Collaborator</button>
 </div>
@@ -16,25 +16,17 @@
     <thead>
         <tr>
             <th>
-                @*@Html.DisplayNameFor(model => model.FullName)*@Name
+                @*@Html.DisplayNameFor(model => model.FullName)*@Mobile
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.Mobile)*@Mobile
+                @*@Html.DisplayNameFor(model => model.Mobile)*@Name
             </th>
-            <th>
-                @*@Html.DisplayNameFor(model => model.Status)*@Status
-            </th>
+
             <th>
                 @*@Html.DisplayNameFor(model => model.GenderName)*@Gender
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.DOB)*@DOB
-            </th>
-            <th>
-                @*@Html.DisplayNameFor(model => model.RoleName)*@Role
-            </th>
-            <th>
-                @*                @Html.DisplayNameFor(model => model.CreatedUtcDate)*@Join date
+                @*@Html.DisplayNameFor(model => model.GenderName)*@Status
             </th>
             <th></th>
         </tr>
@@ -45,38 +37,31 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                    @Html.DisplayFor(modelItem => item.FullName)
                 </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.GenderName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DOB)
+                    @Html.DisplayFor(modelItem => item.Status)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RoleName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedUtcDate)
-                </td>
+                
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-link p-0" href="#" data-toggle="dropdown">Action</a>
                         <div class="dropdown-menu dropdown-menu-lg-left">
                             <button class="dropdown-item">
-                                @Html.ActionLink("Edit", "EditCollab", new { userId = item.UserId,shopId=item.ShopId })
+                                @Html.ActionLink("Edit", "EditCollab", new { userId = item.UserId, shopId = item.ShopId })
                             </button>
                             <button class="dropdown-item">
-                                @Html.ActionLink("Details", "DetailsCollab", new { userId = item.UserId,shopId=item.ShopId })
+                                @Html.ActionLink("Details", "DetailsCollab", new { userId = item.UserId, shopId = item.ShopId })
                             </button>
                             <button class="dropdown-item">
-                                @Html.ActionLink("Delete", "DeleteCollab", new { userId = item.UserId,shopId=item.ShopId })
+                                @Html.ActionLink("Delete", "DeleteCollab", new { userId = item.UserId, shopId = item.ShopId })
                             </button>
                         </div>
                     </div>

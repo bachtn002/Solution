@@ -23,7 +23,8 @@ namespace WebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var result = await _userService.GetAllUser();
+            long userId = _userService.GetUserId();
+            var result = await _userService.GetUserDetails(userId);
             return View(result);
         }
         [HttpGet]
@@ -43,7 +44,7 @@ namespace WebApplication.Controllers
             var result = await _userService.RegisterUser(request);
             if (result == false)
             {
-                ModelState.AddModelError(string.Empty, "Mobile already exists");
+                ModelState.AddModelError(string.Empty, "That mobile is taken");
                 return View();
             }
             return RedirectToAction("Login","Login");

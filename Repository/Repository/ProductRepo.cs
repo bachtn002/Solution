@@ -80,7 +80,7 @@ namespace Repository.Repository
 
         public async Task<bool> DeleteCategory(CategoryUpdateModel request)
         {
-            var category = await _dataDbContext.TCategories.FirstOrDefaultAsync(x => x.CategoryId == request.CategoryId);
+            var category = await _dataDbContext.TCategories.SingleOrDefaultAsync(x => x.CategoryId == request.CategoryId);
             if (category != null)
             {
                 category.IsDelete = 1;
@@ -95,9 +95,27 @@ namespace Repository.Repository
             return true;
         }
 
-        public Task<bool> DeleteProduct(long productId)
+
+        public async Task<bool> DeleteProduct(ProductUpdateModel request)
         {
-            throw new NotImplementedException();
+            var product = await _dataDbContext.TProducts.FirstOrDefaultAsync(x => x.ProductId == request.ProductId);
+            var productCategory = await _dataDbContext.TProductCategories.FirstOrDefaultAsync(x => x.ProductId == request.ProductId && x.CategoryId == request.CategoryId);
+            if (product != null)
+            {
+                product.IsDelete = 1;
+                product.ModifiedUtcDate = DateTime.Now;
+                productCategory.IsDelete = 1;
+                productCategory.ModifiedUtcDate = DateTime.Now;
+                _dataDbContext.TProducts.Update(product);
+                _dataDbContext.TProductCategories.Update(productCategory);
+            }
+            var result = await _dataDbContext.SaveChangesAsync();
+            if (result <= 0)
+            {
+                return false;
+            }
+            return true;
+
         }
 
         public async Task<List<CategoryViewModel>> GetCategoryByShopId(long shopId)
@@ -121,11 +139,13 @@ namespace Repository.Repository
                         join pc in _dataDbContext.TProductCategories on p.ProductId equals pc.ProductId
                         join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
                         join tm in _dataDbContext.TmProductStatuses on p.ProductStatusId equals tm.ProductStatusId
-                        where s.ShopId == shopId && c.CategoryId == categoryId && pc.IsDelete == 0
+                        where s.ShopId == shopId && c.CategoryId == categoryId && pc.IsDelete == 0 && p.IsDelete == 0
                         select new { s, p, pc, c, tm };
             var data = await query.Select(x => new ProductViewModel()
             {
                 ProductId = x.p.ProductId,
+                CategoryId = x.pc.CategoryId,
+                ShopId = x.s.ShopId,
                 Name = x.p.Name,
                 NameCategory = x.c.NameCategory,
                 Price = x.p.Price,
@@ -151,9 +171,33 @@ namespace Repository.Repository
             return data;
         }
 
-        public Task<ProductDetailModel> GetProductDetails(long productId)
+        public async Task<ProductDetailModel> GetProductDetails(long productId)
         {
-            throw new NotImplementedException();
+            var product = await _dataDbContext.TProducts.FirstOrDefaultAsync(x => x.ProductId == productId);
+            var result = new ProductDetailModel()
+            {
+                ProductId = product.ProductId,
+                NameProduct = product.Name,
+                Price = product.Price,
+                Images = product.Images,
+                Properties = product.Properties,
+                Description = product.Description,
+                CreatedUtcDate = product.CreatedUtcDate,
+                ProductStatusName = (from p in _dataDbContext.TProducts
+                                     join tm in _dataDbContext.TmProductStatuses on p.ProductStatusId equals tm.ProductStatusId
+                                     where tm.ProductStatusId == product.ProductStatusId
+                                     select tm.ProductStatusName).FirstOrDefault(),
+                NameShop=(from p in _dataDbContext.TProducts
+                          join s in _dataDbContext.TShops on p.ShopId equals s.ShopId
+                          where s.ShopId==product.ShopId
+                          select s.Name).FirstOrDefault(),
+                NameCategory=(from p in _dataDbContext.TProducts
+                              join pc in _dataDbContext.TProductCategories on p.ProductId equals pc.ProductId
+                              join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
+                              where p.ProductId==product.ProductId
+                              select c.NameCategory).FirstOrDefault()
+            };
+            return result;
         }
 
         public async Task<CategoryUpdateModel> GetUpdateCategory(long categoryId)
@@ -165,7 +209,7 @@ namespace Repository.Repository
                 CategoryId = category.CategoryId,
                 ShopId = category.ShopId,
                 NameCategory = category.NameCategory,
-                ParentId=(int)category.ParentId
+                ParentId = category.ParentId.GetValueOrDefault()
             };
             var query = from c in _dataDbContext.TCategories
                         where c.ShopId == category.ShopId
@@ -186,7 +230,7 @@ namespace Repository.Repository
             return categoryVM;
         }
 
-        public async Task<ProductUpdateModel> GetUpdateProduct(long productId)
+        public async Task<ProductUpdateModel> GetUpdateProduct(long productId, long categoryId, long shopId)
         {
             var product = await _dataDbContext.TProducts.FirstOrDefaultAsync(x => x.ProductId == productId);
             var result = new ProductUpdateModel()
@@ -195,8 +239,8 @@ namespace Repository.Repository
                 Price = product.Price,
                 ProductStatusId = product.ProductStatusId,
                 Description = product.Description,
-                Images=product.Images,
-                Properties=product.Properties,
+                Images = product.Images,
+                Properties = product.Properties,
 
             };
             return result;

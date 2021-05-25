@@ -19,5 +19,11 @@ namespace Repository.Model
         public DateTime DateOfBirth { get; set; }
         [Display(Name = "Role")]
         public string RoleName { get; set; }
+        public string Avatar { get; set; }
+        public string UserStatusName { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DOB { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime JoinDate { get; set; }
     }
 }

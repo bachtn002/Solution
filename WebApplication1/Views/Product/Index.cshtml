@@ -8,7 +8,7 @@
 <h3>Product portfolio</h3>
 
 <div class="d-flex justify-content-end mb-2">
-    <button class="btn btn-success mr-1" onclick="location.href = '@Url.Action("Details","Shop",new {shopId=shopId })'">Back</button>
+    <button class="btn btn-success mr-1" onclick="history.back()">Back</button>
     <button class="btn btn-primary" onclick="location.href = '@Url.Action("CreateCategory","Product",new {shopId=shopId })'">Create New</button>
 </div>
 <table class="table">
@@ -34,14 +34,15 @@
                 @Html.DisplayFor(modelItem => item.NameCategory)
             </td>
             <td>
+                <button class="btn btn-info"
+                        onclick="location.href = '@Url.Action("GetProduct","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
+                    View Product
+                </button>
                 <button class="btn btn-warning"
                         onclick="location.href = '@Url.Action("UpdateCategory","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
                     Edit
                 </button>
-                <button class="btn btn-info"
-                        onclick="location.href = '@Url.Action("GetProduct","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
-                    Products
-                </button>
+
                 <button class="btn btn-danger"
                         onclick="location.href = '@Url.Action("DeleteCategory","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
                     Delete

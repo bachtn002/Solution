@@ -130,7 +130,7 @@ namespace WebApplication.Controllers
             var result = await _shopService.CreateCollab(request.ShopId, request);
             if (result == false)
             {
-                ModelState.AddModelError(string.Empty, "Mobile is already");
+                ModelState.AddModelError(string.Empty, "That mobile is taken");
                 return View();
             }
             return RedirectToAction("ShowCollab", "Shop", new { shopId = request.ShopId });
@@ -160,14 +160,18 @@ namespace WebApplication.Controllers
                 var resultInsert = await _shopService.InsertShopUser();
                 return RedirectToAction("Index");
             }
-            
-
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(long shopId)
         {
             var result = await _shopService.GetShopDetails(shopId);
+            return View(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult>DetailsCollab(long userId)
+        {
+            var result = await _shopService.GetCollabDetails(userId);
             return View(result);
         }
     }

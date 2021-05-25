@@ -57,7 +57,7 @@
                     Details
                 </button>
                 <button class="btn btn-danger"
-                        onclick="location.href = '@Url.Action("DeleteProduct","Product",new {productId=item.ProductId })'">
+                        onclick="location.href = '@Url.Action("DeleteProduct","Product",new {productId=item.ProductId,categoryId=item.CategoryId,shopId=item.ShopId})'">
                     Delete
                 </button>
                 

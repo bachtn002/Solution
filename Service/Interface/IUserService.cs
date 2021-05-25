@@ -9,9 +9,10 @@ namespace Service.Interface
 {
     public interface IUserService
     {
-        public Task<List<UserViewModel>> GetAllUser();
+        public Task<UserViewModel> GetUserDetails(long userId);
         public Task<bool> CreateUser(UserCreateModel request);
         public Task<bool> RegisterUser(UserRegisterModel request);
         public Task<string> LoginUser(UserLoginModel request);
+        public long GetUserId();
     }
 }

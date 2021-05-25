@@ -10,6 +10,8 @@ namespace Repository.Model.ProductModel
     public class ProductViewModel
     {
         public long ProductId { get; set; }
+        public long ShopId { get; set; }
+        public long CategoryId { get; set; }
         public string Name { get; set; }
 
         [Display(Name="Category")]

@@ -24,6 +24,7 @@ namespace Repository.Interface
         public Task<bool> UpdateCollab(CollabUpdateModel request);
         public Task<CollabUpdateModel> GetCollabUpdate(long userId, long shopId);
         public Task<bool> DeleteCollab(CollabUpdateModel request);
+        public Task<CollabViewModel> GetCollabDetails(long userId);
 
 
     }

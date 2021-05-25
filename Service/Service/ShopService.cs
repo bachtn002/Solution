@@ -85,5 +85,10 @@ namespace Service.Service
         {
             return await _shopRepo.DeleteCollab(request);
         }
+
+        public async Task<CollabViewModel> GetCollabDetails(long userId)
+        {
+            return await _shopRepo.GetCollabDetails(userId);
+        }
     }
 }

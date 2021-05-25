@@ -11,7 +11,9 @@ namespace Repository.Model
     {
         public long ShopId { get; set; }
         public sbyte UserStatusId { get; set; }
+        public string UserStatusName { get; set; }
         public long UserId { get; set; }
+        public string Avatar { get; set; }
 
         [Display(Name = "Name")]
         public string FullName { get; set; }
@@ -35,5 +37,6 @@ namespace Repository.Model
         [Display(Name ="Join")]
         [DataType(DataType.Date)]
         public DateTime CreatedUtcDate { get; set; }
+        public DateTime JoinDate { get; set; }
     }
 }

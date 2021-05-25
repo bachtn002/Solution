@@ -22,9 +22,14 @@ namespace Service.Service
             throw new NotImplementedException();
         }
 
-        public async Task<List<UserViewModel>> GetAllUser()
+        public async Task<UserViewModel> GetUserDetails(long userId)
         {
-            return await _userRepo.GetAllUser();
+            return await _userRepo.GetUserDetails(userId);
+        }
+
+        public long GetUserId()
+        {
+            return _userRepo.GetUserId();
         }
 
         public async Task<string> LoginUser(UserLoginModel request)
