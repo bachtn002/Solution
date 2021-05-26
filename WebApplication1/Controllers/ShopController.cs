@@ -98,7 +98,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "That name shop is taken. Try another");
                 return View(request);
             }
-            return RedirectToAction("Index", "Shop");
+            return RedirectToAction("Details", "Shop", new { shopId=request.ShopId});
         }
 
         [HttpGet]

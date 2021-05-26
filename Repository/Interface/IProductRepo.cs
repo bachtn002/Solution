@@ -10,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IProductRepo
     {
-        public Task<List<ProductViewModel>> GetProduct(long shopId, long categoryId);
+        public Task<List<ProductViewModel>> GetProduct(long shopId);
         public Task<bool> CreateProduct(ProductCreateModel request);
         public Task<bool> DeleteProduct(ProductUpdateModel request);
         public Task<bool> UpdateProduct(ProductUpdateModel request);
@@ -21,6 +21,7 @@ namespace Repository.Interface
         public Task<CategoryUpdateModel> GetUpdateCategory(long shopId);
         public Task<bool> DeleteCategory(CategoryUpdateModel request);
         public Task<bool> UpdateCategory(CategoryUpdateModel request);
+        public Task<List<CategoryViewModel>> GetParentCategory(long shopId);
         
         
     }

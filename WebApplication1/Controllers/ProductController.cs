@@ -15,16 +15,16 @@ namespace WebApplication.Controllers
     [Authorize]
     public class ProductController : Controller
     {
-        
+
         private readonly IProductService _productService;
-        
+
         public ProductController(IProductService productService)
         {
             _productService = productService;
-            
+
         }
 
-        
+        [Route("category")]
         public async Task<IActionResult> Index(long shopId)
         {
             ViewBag.ShopId = shopId;
@@ -33,13 +33,20 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateProduct(long shopId, long categoryId)
+        public async Task<IActionResult> CreateProduct(long shopId, long categoryId)
         {
+            var result = await _productService.GetCategoryByShopId(shopId);
+            ViewBag.ListCategory = result.Select(x => new SelectListItem()
+            {
+                Value=x.CategoryId.ToString(),
+                Text=x.NameCategory
+            });
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateModel request)
         {
+            var res = await _productService.GetCategoryByShopId(request.ShopId);
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError(string.Empty, "Created Failed");
@@ -49,20 +56,37 @@ namespace WebApplication.Controllers
             if (result == false)
             {
                 ModelState.AddModelError(string.Empty, "That name product is taken. Try another");
+                ViewBag.ListCategory = res.Select(x => new SelectListItem()
+                {
+                    Value = x.CategoryId.ToString(),
+                    Text = x.NameCategory
+                });
                 return View();
             }
             return RedirectToAction("GetProduct", "Product", new { shopId = request.ShopId, categoryId = request.CategoryId });
         }
 
         [HttpGet]
-        public IActionResult CreateCategory(long shopId)
+        public async Task<IActionResult> CreateCategory(long shopId)
         {
+            var result = await _productService.GetParentCategory(shopId);
+            ViewBag.ListParent = result.Select(x => new SelectListItem()
+            {
+                Value = x.CategoryId.ToString(),
+                Text = x.NameCategory
+            });
             ViewBag.ShopId = shopId;
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryCreateModel request)
         {
+            var res = await _productService.GetParentCategory(request.ShopId);
+            ViewBag.ListParent = res.Select(x => new SelectListItem()
+            {
+                Value = x.CategoryId.ToString(),
+                Text = x.NameCategory
+            });
             var result = await _productService.CreateCategory(request);
             if (result == false)
             {
@@ -73,11 +97,10 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProduct(long shopId, long categoryId)
+        public async Task<IActionResult> GetProduct(long shopId)
         {
             ViewBag.ShopId = shopId;
-            ViewBag.CategoryId = categoryId;
-            var result = await _productService.GetProduct(shopId, categoryId);
+            var result = await _productService.GetProduct(shopId);
             return View(result);
         }
 
@@ -96,7 +119,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "Delete Failed");
                 return View(request);
             }
-            return RedirectToAction("Index", "Product", new {shopId=request.ShopId });
+            return RedirectToAction("Index", "Product", new { shopId = request.ShopId });
         }
 
         [HttpGet]
@@ -105,8 +128,8 @@ namespace WebApplication.Controllers
             var result = await _productService.GetUpdateCategory(categoryId);
             ViewBag.ListTest = result.CategoryParentList.Select(x => new SelectListItem()
             {
-                Value=x.ParentId.ToString(),
-                Text=x.NameCategory
+                Value = x.ParentId.ToString(),
+                Text = x.NameCategory
             });
             return View(result);
         }
@@ -119,14 +142,14 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "That name category is taken");
                 return View(request);
             }
-            return RedirectToAction("Index","Product",new {shopId=request.ShopId, categoryId=request.CategoryId });
+            return RedirectToAction("Index", "Product", new { shopId = request.ShopId, categoryId = request.CategoryId });
         }
 
         [HttpGet]
         public async Task<IActionResult> DeleteProduct(long productId, long categoryId, long shopId)
         {
-            var result = await _productService.GetUpdateProduct(productId, categoryId,shopId);
-            
+            var result = await _productService.GetUpdateProduct(productId, categoryId, shopId);
+
             return View(result);
         }
         [HttpPost]
@@ -138,7 +161,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "Delete Failed");
                 return View(request);
             }
-            return RedirectToAction("GetProduct", "Product", new {shopId=request.ShopId, categoryId=request.CategoryId});
+            return RedirectToAction("GetProduct", "Product", new { shopId = request.ShopId, categoryId = request.CategoryId });
         }
 
         [HttpGet]

@@ -13,6 +13,8 @@ namespace Repository.Model.CategoryModel
         [Display(Name ="Name Category")]
         [Required(ErrorMessage ="Name is required")]
         public string NameCategory { get; set; }
+        [Display(Name ="Parent Category")]
+        public int ParentId { get; set; }
        
 
     }

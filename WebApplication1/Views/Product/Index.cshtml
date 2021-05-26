@@ -8,36 +8,35 @@
 <h3>Product portfolio</h3>
 
 <div class="d-flex justify-content-end mb-2">
-    <button class="btn btn-success mr-1" onclick="history.back()">Back</button>
+    <button class="btn btn-success mr-1" onclick="location.href = '@Url.Action("Details","Shop",new {shopId=shopId})'">Back</button>
     <button class="btn btn-primary" onclick="location.href = '@Url.Action("CreateCategory","Product",new {shopId=shopId })'">Create New</button>
 </div>
 <table class="table">
     <thead>
         <tr>
-            @*<th>
-                @Html.DisplayNameFor(model => model.ShopId)
-            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.NameCategory)
             </th>
-
+            <th>
+                @Html.DisplayNameFor(model => model.ParentCategory)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.ShopId)
-            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.NameCategory)
             </td>
             <td>
-                <button class="btn btn-info"
+                @Html.DisplayFor(modelItem => item.ParentCategory)
+            </td>
+            <td>
+                @*<button class="btn btn-info"
                         onclick="location.href = '@Url.Action("GetProduct","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
                     View Product
-                </button>
+                </button>*@
                 <button class="btn btn-warning"
                         onclick="location.href = '@Url.Action("UpdateCategory","Product", new {shopId=item.ShopId,categoryId=item.CategoryId})'">
                     Edit

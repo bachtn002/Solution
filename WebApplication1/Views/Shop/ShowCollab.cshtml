@@ -16,17 +16,17 @@
     <thead>
         <tr>
             <th>
-                @*@Html.DisplayNameFor(model => model.FullName)*@Mobile
+                @*@Html.DisplayNameFor(model => model.FullName)*@MOBILE
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.Mobile)*@Name
+                @*@Html.DisplayNameFor(model => model.Mobile)*@NAME
             </th>
 
             <th>
-                @*@Html.DisplayNameFor(model => model.GenderName)*@Gender
+                @*@Html.DisplayNameFor(model => model.GenderName)*@GENDER
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.GenderName)*@Status
+                @*@Html.DisplayNameFor(model => model.GenderName)*@STATUS
             </th>
             <th></th>
         </tr>
@@ -42,29 +42,27 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FullName)
                 </td>
-                
+
                 <td>
                     @Html.DisplayFor(modelItem => item.GenderName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
-                
+
                 <td>
-                    <div class="dropdown">
-                        <a class="btn btn-link p-0" href="#" data-toggle="dropdown">Action</a>
-                        <div class="dropdown-menu dropdown-menu-lg-left">
-                            <button class="dropdown-item">
-                                @Html.ActionLink("Edit", "EditCollab", new { userId = item.UserId, shopId = item.ShopId })
-                            </button>
-                            <button class="dropdown-item">
-                                @Html.ActionLink("Details", "DetailsCollab", new { userId = item.UserId, shopId = item.ShopId })
-                            </button>
-                            <button class="dropdown-item">
-                                @Html.ActionLink("Delete", "DeleteCollab", new { userId = item.UserId, shopId = item.ShopId })
-                            </button>
-                        </div>
-                    </div>
+                    <button class="btn btn-warning"
+                            onclick="location.href = '@Url.Action("EditCollab", "Shop", new { userId = item.UserId, shopId = item.ShopId })'">
+                        Edit
+                    </button>
+                    <button class="btn btn-info"
+                            onclick="location.href = '@Url.Action("DetailsCollab", "Shop", new {userId = item.UserId, shopId = item.ShopId })'">
+                        Details
+                    </button>
+                    <button class="btn btn-danger"
+                            onclick="location.href = '@Url.Action("DeleteCollab", "Shop", new { userId = item.UserId, shopId = item.ShopId  })'">
+                        Delete
+                    </button>
                 </td>
             </tr>
         }

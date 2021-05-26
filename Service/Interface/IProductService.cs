@@ -13,7 +13,7 @@ namespace Service.Interface
         public Task<bool> CreateProduct(ProductCreateModel request);
         public Task<bool> CreateCategory(CategoryCreateModel request);
         public Task<List<CategoryViewModel>> GetCategoryByShopId(long shopId);
-        public Task<List<ProductViewModel>> GetProduct(long shopId, long categoryId);
+        public Task<List<ProductViewModel>> GetProduct(long shopId);
         public Task<ProductUpdateModel> GetUpdateProduct(long productId, long categoryId, long shopId);
         public Task<bool> UpdateProduct(ProductUpdateModel request);
         public Task<CategoryUpdateModel> GetUpdateCategory(long categoryId);
@@ -21,5 +21,6 @@ namespace Service.Interface
         public Task<bool> UpdateCategory(CategoryUpdateModel request);
         public Task<bool> DeleteProduct(ProductUpdateModel request);
         public Task<ProductDetailModel> GetProductDetails(long productId);
+        public Task<List<CategoryViewModel>> GetParentCategory(long shopId);
     }
 }

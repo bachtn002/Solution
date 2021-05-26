@@ -20,11 +20,10 @@ namespace Repository.Repository
             _dataDbContext = dataDbContext;
         }
 
-
-
         public async Task<bool> CreateCategory(CategoryCreateModel request)
         {
-            if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory && x.ShopId == request.ShopId))
+            if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory 
+            && x.ShopId == request.ShopId))
             {
                 return false;
             }
@@ -34,6 +33,7 @@ namespace Repository.Repository
                 {
                     ShopId = request.ShopId,
                     NameCategory = request.NameCategory,
+                    ParentId=request.ParentId,
                     CreatedUtcDate = DateTime.UtcNow
                 });
                 var result = await _dataDbContext.SaveChangesAsync();
@@ -127,32 +127,46 @@ namespace Repository.Repository
             {
                 CategoryId = x.c.CategoryId,
                 ShopId = x.c.ShopId,
-                NameCategory = x.c.NameCategory
+                NameCategory = x.c.NameCategory,
+                ParentCategory = (from c in _dataDbContext.TCategories
+                                  where c.CategoryId == x.c.ParentId && c.IsDelete == 0
+                                  select c.NameCategory).FirstOrDefault()
             }).ToListAsync();
             return data;
         }
 
-        public async Task<List<ProductViewModel>> GetProduct(long shopId, long categoryId)
+        public async Task<List<CategoryViewModel>> GetParentCategory(long shopId)
+        {
+            var query = from c in _dataDbContext.TCategories
+                        where c.ShopId == shopId
+                        select new {c };
+            var result = await query.Select(x => new CategoryViewModel()
+            {
+                NameCategory=x.c.NameCategory,
+                CategoryId=x.c.CategoryId
+            }).ToListAsync();
+            return result;
+        }
+
+        public async Task<List<ProductViewModel>> GetProduct(long shopId)
         {
             var query = from s in _dataDbContext.TShops
                         join p in _dataDbContext.TProducts on s.ShopId equals p.ShopId
                         join pc in _dataDbContext.TProductCategories on p.ProductId equals pc.ProductId
                         join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
                         join tm in _dataDbContext.TmProductStatuses on p.ProductStatusId equals tm.ProductStatusId
-                        where s.ShopId == shopId && c.CategoryId == categoryId && pc.IsDelete == 0 && p.IsDelete == 0
+                        where s.ShopId == shopId && p.IsDelete == 0
                         select new { s, p, pc, c, tm };
+
             var data = await query.Select(x => new ProductViewModel()
             {
                 ProductId = x.p.ProductId,
                 CategoryId = x.pc.CategoryId,
-                ShopId = x.s.ShopId,
                 Name = x.p.Name,
                 NameCategory = x.c.NameCategory,
                 Price = x.p.Price,
-                Images = x.p.Images,
                 ProductStatusName = x.tm.ProductStatusName,
-                Properties = x.p.Properties,
-                Description = x.p.Description
+                ShopId=x.s.ShopId
             }).ToListAsync();
             return data;
         }
@@ -187,15 +201,15 @@ namespace Repository.Repository
                                      join tm in _dataDbContext.TmProductStatuses on p.ProductStatusId equals tm.ProductStatusId
                                      where tm.ProductStatusId == product.ProductStatusId
                                      select tm.ProductStatusName).FirstOrDefault(),
-                NameShop=(from p in _dataDbContext.TProducts
-                          join s in _dataDbContext.TShops on p.ShopId equals s.ShopId
-                          where s.ShopId==product.ShopId
-                          select s.Name).FirstOrDefault(),
-                NameCategory=(from p in _dataDbContext.TProducts
-                              join pc in _dataDbContext.TProductCategories on p.ProductId equals pc.ProductId
-                              join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
-                              where p.ProductId==product.ProductId
-                              select c.NameCategory).FirstOrDefault()
+                NameShop = (from p in _dataDbContext.TProducts
+                            join s in _dataDbContext.TShops on p.ShopId equals s.ShopId
+                            where s.ShopId == product.ShopId
+                            select s.Name).FirstOrDefault(),
+                NameCategory = (from p in _dataDbContext.TProducts
+                                join pc in _dataDbContext.TProductCategories on p.ProductId equals pc.ProductId
+                                join c in _dataDbContext.TCategories on pc.CategoryId equals c.CategoryId
+                                where p.ProductId == product.ProductId
+                                select c.NameCategory).FirstOrDefault()
             };
             return result;
         }
@@ -249,14 +263,14 @@ namespace Repository.Repository
         public async Task<bool> UpdateCategory(CategoryUpdateModel request)
         {
             if (await _dataDbContext.TCategories.AnyAsync(x => x.NameCategory == request.NameCategory
-             && x.CategoryId != request.CategoryId))
+             && x.ShopId == request.ShopId && x.CategoryId != request.CategoryId))
             {
                 return false;
             }
             var category = await _dataDbContext.TCategories.FirstOrDefaultAsync(x => x.CategoryId == request.CategoryId);
             if (category != null)
             {
-                /*category.CategoryId = request.CategoryId;*/
+
                 category.NameCategory = request.NameCategory;
                 category.ParentId = request.ParentId;
                 category.ModifiedUtcDate = DateTime.UtcNow;

@@ -43,9 +43,14 @@ namespace Service.Service
             return await _productRepo.GetCategoryByShopId(shopId);
         }
 
-        public async Task<List<ProductViewModel>> GetProduct(long shopId,long categoryId)
+        public async Task<List<CategoryViewModel>> GetParentCategory(long shopId)
         {
-            return await _productRepo.GetProduct(shopId, categoryId);
+            return await _productRepo.GetParentCategory(shopId);
+        }
+
+        public async Task<List<ProductViewModel>> GetProduct(long shopId)
+        {
+            return await _productRepo.GetProduct(shopId);
         }
 
         public async Task<ProductDetailModel> GetProductDetails(long productId)

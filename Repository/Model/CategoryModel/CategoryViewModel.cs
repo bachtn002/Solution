@@ -9,10 +9,13 @@ namespace Repository.Model.CategoryModel
 {
     public class CategoryViewModel
     {
+        [Display(Name ="CODE")]
         public long CategoryId { get; set; }
         public long ShopId { get; set; }
-        [Display(Name ="Name")]
+        [Display(Name ="NAME")]
         public string NameCategory { get; set; }
+        [Display(Name ="PARENT CATEGORY")]
+        public string ParentCategory { get; set; }
 
     }
 }

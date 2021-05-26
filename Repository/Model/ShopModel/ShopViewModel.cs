@@ -14,15 +14,15 @@ namespace Repository.Model
         [Display(Name = "Owner")]
         public string FullName { get; set; }
 
-        [Display(Name = "Role")]
+        [Display(Name = "ROLE")]
         public string RoleName { get; set; }
 
-        [Display(Name = "Shop name")]
+        [Display(Name = "SHOP NAME")]
         public string Name { get; set; }
 
-        [Display(Name = "Shop status")]
+        [Display(Name = "SHOP SATUS")]
         public string ShopStatusName { get; set; }
-        [Display(Name = "Address")]
+        [Display(Name = "ADDRESS")]
         public string Address { get; set; }
 
 
