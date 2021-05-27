@@ -184,7 +184,7 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "That name product is taken. Try another");
                 return View(request);
             }
-            return RedirectToAction("", "", new { });
+            return RedirectToAction("GetProduct", "Product", new {shopId=request.ShopId });
         }
 
         [HttpGet]

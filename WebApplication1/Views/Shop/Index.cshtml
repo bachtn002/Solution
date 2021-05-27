@@ -17,6 +17,9 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ShopStatusName)
             </th>
             <th>
@@ -28,24 +31,31 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ShopStatusName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    <button class="btn btn-info"
-                            onclick="location.href='@Url.Action("Details", "Shop", new { shopId = item.ShopId })'">
-                        View
-                    </button>
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShopStatusName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                <button class="btn btn-info"
+                        onclick="location.href='@Url.Action("Details", "Shop", new { shopId = item.ShopId })'">
+                    View
+                </button>
+                <button class="btn btn-info"
+                        onclick="location.href='@Url.Action("CreateCart", "Cart", new { shopId = item.ShopId })'">
+                    Sell
+                </button>
+            </td>
 
-            </tr>
+        </tr>
         }
     </tbody>
 </table>

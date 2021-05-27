@@ -255,7 +255,7 @@ namespace Repository.Repository
                 Description = product.Description,
                 Images = product.Images,
                 Properties = product.Properties,
-
+                ShopId=product.ShopId
             };
             return result;
         }

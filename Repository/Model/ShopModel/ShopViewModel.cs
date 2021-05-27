@@ -20,7 +20,7 @@ namespace Repository.Model
         [Display(Name = "SHOP NAME")]
         public string Name { get; set; }
 
-        [Display(Name = "SHOP SATUS")]
+        [Display(Name = "SHOP STATUS")]
         public string ShopStatusName { get; set; }
         [Display(Name = "ADDRESS")]
         public string Address { get; set; }

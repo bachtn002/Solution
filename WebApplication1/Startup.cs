@@ -47,16 +47,19 @@ namespace WebApplication1
             services.AddTransient<IShopRepo, ShopRepo>();
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IProductRepo, ProductRepo>();
+            services.AddTransient<ICartRepo, CartRepo>();
             
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICartService, CartService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/login/login";
+
                 });
             
         }

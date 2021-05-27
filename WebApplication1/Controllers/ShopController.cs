@@ -163,6 +163,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+       
         public async Task<IActionResult> Details(long shopId)
         {
             var result = await _shopService.GetShopDetails(shopId);
