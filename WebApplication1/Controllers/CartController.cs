@@ -22,6 +22,7 @@ namespace WebApplication.Controllers
         public async Task<IActionResult> CreateCart(long shopId)
         {
             var result1 = await _cartServie.GetProduct(shopId);
+            ViewBag.ShopId = shopId;
             ViewBag.ListProduct = result1.Select(x => new SelectListItem()
             {
                 Value = x.ProductId.ToString(),

@@ -48,11 +48,13 @@ namespace WebApplication1
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IProductRepo, ProductRepo>();
             services.AddTransient<ICartRepo, CartRepo>();
+            services.AddTransient<IOrderRepo, OrderRepo>();
             
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICartService, CartService>();
+            services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "CreateCart";
     var listProduct = ViewBag.ListProduct;
+    var shopId = ViewBag.ShopId;
 }   
 
 <h1>Cart</h1>
@@ -45,7 +46,10 @@
             </div>
             <div class="form-group">
                 <a class="btn btn-success text-light" onclick="location.href = '@Url.Action("Index","Shop", new { })'">Back</a>
+
                 <input type="submit" value="Add to cart" class="btn btn-primary" />
+
+                <a class="btn btn-info text-light" onclick="location.href = '@Url.Action("GetCart","Cart", new {shopId=shopId})'">View Cart</a>
             </div>
         </form>
     </div>

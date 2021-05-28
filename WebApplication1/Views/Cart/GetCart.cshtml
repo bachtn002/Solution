@@ -8,8 +8,11 @@
 <h3>Cart Item</h3>
 
 <p class="d-flex justify-content-end">
+
     <a class="btn btn-success text-light mr-1 " onclick="location.href = '@Url.Action("CreateCart","Cart",new {shopId=shopId})'">Add more product</a>
-    <a class="btn btn-primary text-light " onclick="location.href = '@Url.Action("DeleteCart","Cart",new {shopId=shopId})'">Delete Cart</a>
+
+    <a class="btn btn-primary text-light mr-4" onclick="location.href = '@Url.Action("CreateOrder","Order",new {shopId=shopId})'">Order</a>
+    <a class="btn btn-danger text-light  " onclick="location.href = '@Url.Action("DeleteCart","Cart",new {shopId=shopId})'">Delete Cart</a>
 </p>
 <table class="table">
     <thead>
