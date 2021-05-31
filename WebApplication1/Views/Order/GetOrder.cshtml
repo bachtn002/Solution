@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Repository.Model.OrderModel.OrderViewModel>
+
+@{
+    ViewData["Title"] = "GetOrder";
+}
+
+<h3>Order</h3>
+<div class="d-flex justify-content-end mb-1">
+    <a class="btn btn-success text-light" onclick="location.href = '@Url.Action("","",new { })'">Payment</a>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                SELLER
+            </th>
+            <th>
+                PRODUCT
+            </th>
+            <th>
+                QTY
+            </th>
+            <th>
+                PRICE
+            </th>
+            <th>
+                DISCOUNT
+            </th>
+            <th>
+                AMOUNT
+            </th>
+            <th>
+                DATE
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Qty)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiscountAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedUtcDate)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

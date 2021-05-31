@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Model.OrderModel
 {
-    public class CustomerCreateModel
+    public class OrderCreateModel
     {
         public long UserId { get; set; }
         public long ShopId { get; set; }

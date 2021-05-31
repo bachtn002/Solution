@@ -16,9 +16,14 @@ namespace Service.Service
         {
             _orderRepo = orderRepo;
         }
-        public async Task<bool> CreateOrder(CustomerCreateModel request)
+        public async Task<bool> CreateOrder(OrderCreateModel request)
         {
             return await _orderRepo.CreateOrder(request);
+        }
+
+        public async Task<List<OrderViewModel>> GetOrder()
+        {
+            return await _orderRepo.GetOrder();
         }
     }
 }

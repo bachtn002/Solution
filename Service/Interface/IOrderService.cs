@@ -9,6 +9,7 @@ namespace Service.Interface
 {
     public interface IOrderService
     {
-        public Task<bool> CreateOrder(CustomerCreateModel request);
+        public Task<bool> CreateOrder(OrderCreateModel request);
+        public Task<List<OrderViewModel>> GetOrder();
     }
 }

@@ -22,7 +22,7 @@ namespace WebApplication.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(CustomerCreateModel request)
+        public async Task<IActionResult> CreateOrder(OrderCreateModel request)
         {
             var result = await _orderService.CreateOrder(request);
             if (result == false)
@@ -30,7 +30,14 @@ namespace WebApplication.Controllers
                 ModelState.AddModelError(string.Empty, "Order Failed");
                 return View();
             }
-            return RedirectToAction("","",new { });
+            return RedirectToAction("GetOrder","Order",new {});
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetOrder()
+        {
+            var result = await _orderService.GetOrder();
+            return View(result);
         }
     }
 }

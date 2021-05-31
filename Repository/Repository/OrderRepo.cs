@@ -19,7 +19,7 @@ namespace Repository.Repository
             _dataDbContext = dataDbContext;
             _userRepo = userRepo;
         }
-        public async Task<bool> CreateOrder(CustomerCreateModel request)
+        public async Task<bool> CreateOrder(OrderCreateModel request)
         {
             var customer = await _dataDbContext.TCustomers.FirstOrDefaultAsync(
                 x => x.Mobile == request.Mobile && x.IsDelete == 0);
@@ -51,7 +51,7 @@ namespace Repository.Repository
                     x.ModifiedUtcDate = DateTime.UtcNow;
                 });
                 var res2 = await _dataDbContext.SaveChangesAsync();
-                if (res2 <=0)
+                if (res2 <= 0)
                     return false;
                 return true;
             }
@@ -79,7 +79,7 @@ namespace Repository.Repository
                 {
                     UserId = _userRepo.GetUserId(),
                     ShopId = request.ShopId,
-                    CustomerId =await _dataDbContext.TCustomers.Select(c=>c.CustomerId).MaxAsync(),
+                    CustomerId = await _dataDbContext.TCustomers.Select(c => c.CustomerId).MaxAsync(),
                     OrderStatusId = 1,
                     TotalAmount = totalAmount,
                     TotalDiscountAmount = totalDiscount,
@@ -100,7 +100,29 @@ namespace Repository.Repository
                     return false;
                 return true;
             }
-            
+
+        }
+
+        public async Task<List<OrderViewModel>> GetOrder()
+        {
+            var query = from o in _dataDbContext.TOrders
+                        join c in _dataDbContext.TCarts on o.OrderId equals c.OrderId
+                        join p in _dataDbContext.TProducts on c.ProductId equals p.ProductId
+                        join u in _dataDbContext.TUsers on o.UserId equals u.UserId
+                        where o.OrderId == _dataDbContext.TOrders.Select(x => x.OrderId).Max()
+                        select new { o, c , p, u };
+            var data = await query.Select(x => new OrderViewModel()
+            {
+                FullName=x.u.FullName,
+                Name=x.p.Name,
+                Qty=x.c.Qty,
+                Price=x.c.Price,
+                DiscountAmount=x.c.DiscountAmount,
+                Amount=x.c.Amount,
+                
+                CreatedUtcDate=x.o.CreatedUtcDate
+            }).ToListAsync();
+            return data;
         }
     }
 }

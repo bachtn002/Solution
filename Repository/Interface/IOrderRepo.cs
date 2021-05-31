@@ -9,6 +9,7 @@ namespace Repository.Interface
 {
     public interface IOrderRepo
     {
-        public Task<bool> CreateOrder(CustomerCreateModel request);
+        public Task<bool> CreateOrder(OrderCreateModel request);
+        public Task<List<OrderViewModel>> GetOrder();
     }
 }
