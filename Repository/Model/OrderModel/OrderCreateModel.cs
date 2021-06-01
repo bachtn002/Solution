@@ -11,6 +11,7 @@ namespace Repository.Model.OrderModel
     {
         public long UserId { get; set; }
         public long ShopId { get; set; }
+        [Display(Name ="Gender")]
         public sbyte GenderId { get; set; }
         public string FullName { get; set; }
         [DataType(DataType.Date)]
@@ -18,6 +19,7 @@ namespace Repository.Model.OrderModel
         public string Address { get; set; }
         public string Mobile { get; set; }
         public sbyte CustomerTypeId { get; set; }
+        [Display(Name = "Payment Method")]
         public sbyte PaymentMethodId { get; set; }
         
     }

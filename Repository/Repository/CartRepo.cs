@@ -25,9 +25,15 @@ namespace Repository.Repository
             if (cartItem != null)
             {
                 cartItem.Qty = request.Qty + cartItem.Qty;
+                cartItem.DiscountAmount = ((from p in _dataDbContext.TProducts
+                                            where p.ProductId == request.ProductId
+                                            select p.Price).FirstOrDefault()) * (request.Qty) * Convert.ToDecimal(((request.DiscountRate) / 100));
                 cartItem.Amount = ((from p in _dataDbContext.TProducts
                                     where p.ProductId == request.ProductId
-                                    select p.Price).FirstOrDefault()) * (cartItem.Qty);
+                                    select p.Price).FirstOrDefault()) * (cartItem.Qty) - (((from p in _dataDbContext.TProducts
+                                                                                            where p.ProductId == request.ProductId
+                                                                                            select p.Price).FirstOrDefault()) * (request.Qty) * Convert.ToDecimal(((request.DiscountRate) / 100)));
+                
                 _dataDbContext.TCarts.Update(cartItem);
             }
             else
@@ -41,10 +47,14 @@ namespace Repository.Repository
                              where p.ProductId == request.ProductId
                              select p.Price).FirstOrDefault(),
                     DiscountRate = request.DiscountRate,
-                    DiscountAmount = request.DiscountAmount,
+                    DiscountAmount = ((from p in _dataDbContext.TProducts
+                                       where p.ProductId == request.ProductId
+                                       select p.Price).FirstOrDefault())*(request.Qty)*Convert.ToDecimal(((request.DiscountRate) / 100)),
                     Amount = ((from p in _dataDbContext.TProducts
                                where p.ProductId == request.ProductId
-                               select p.Price).FirstOrDefault()) * (request.Qty),
+                               select p.Price).FirstOrDefault()) * (request.Qty)-(((from p in _dataDbContext.TProducts
+                                                                                    where p.ProductId == request.ProductId
+                                                                                    select p.Price).FirstOrDefault()) * (request.Qty) * Convert.ToDecimal(((request.DiscountRate) / 100))),
                     Note = request.Note,
                     CreatedUtcDate = DateTime.UtcNow
                 });
