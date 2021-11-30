@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data.EFContext;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -48,7 +47,7 @@ namespace Data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql("server=145.239.255.230;database=QL_CTV;user=api_user;password=diennk_ay4DZabZhe5hr2MZe89g7rrAfTGEwANCYTLv6Yyn4AGb27ke6XEhKarcnqjEqnmk", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.17-mariadb"));
+                optionsBuilder.UseMySql("server=127.0.0.1;database=ctv_dev;user=root;password=123456", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.17-mariadb"));
             }
         }
 
@@ -253,7 +252,7 @@ namespace Data.Models
 
                 entity.ToTable("T_Product");
 
-                entity.HasComment("Vì bán qua cộng tác viên nên ko cần quá nhiều thông tin sản phẩm");
+                //entity.HasComment("Vì bán qua cộng tác viên nên ko cần quá nhiều thông tin sản phẩm");
 
                 entity.Property(e => e.ProductId).HasColumnType("bigint(20)");
 
@@ -320,8 +319,7 @@ namespace Data.Models
 
                 entity.ToTable("T_ProductInventory");
 
-                entity.HasComment("Quản lý kho của sản phẩm\r\nSau này mở rộng có thêm thông tin của nhà cung cấp");
-
+                
                 entity.Property(e => e.ProductInventoryId)
                     .HasColumnType("bigint(20)")
                     .ValueGeneratedNever();
